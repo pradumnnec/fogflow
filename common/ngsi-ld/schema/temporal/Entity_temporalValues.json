@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "id": "https://uri.etsi.org/ngsi-ld/schema/Entity_temporalValues.json",
+  "title": "NGSI-LD Entity Temporal Values",
+  "description": "NGSI-LD Simplified Temporal Representation of Entities",
+  "definitions": {
+    "TimestampOrEmpty": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 0
+        }
+      ]
+    },
+    "TemporalValue": {
+      "type": "array",
+      "items": [
+        {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "object",
+            "array"
+          ]
+        },
+        {
+          "$ref": "#/definitions/TimestampOrEmpty"
+        }
+      ],
+      "minTems": 2,
+      "maxItems": 2
+    },
+    "TemporalObject": {
+      "type": "array",
+      "items": [
+        {
+          "type": "string",
+          "format": "uri"
+        },
+        {
+          "$ref": "#/definitions/TimestampOrEmpty"
+        }
+      ],
+      "minTems": 2,
+      "maxItems": 2
+    },
+    "PropertyTemporalValues": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Property"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TemporalValue"
+          }
+        }
+      }
+    },
+    "RelationshipTemporalValues": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Relationship"
+        },
+        "objects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TemporalObject"
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uri"
+    },
+    "type": {
+      "$ref": "https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/schema/common.json#/definitions/Name"
+    },
+    "@context": {
+      "$ref": "https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/schema/common.json#/definitions/LdContext"
+    },
+    "createdAt": {
+      "$ref": "https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/schema/common.json#/definitions/createdAt"
+    },
+    "modifiedAt": {
+      "$ref": "https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/schema/common.json#/definitions/modifiedAt"
+    }
+  },
+  "required": [
+    "type",
+    "id"
+  ],
+  "additionalProperties": {
+    "anyOf": [
+      {
+        "$ref": "#/definitions/PropertyTemporalValues"
+      },
+      {
+        "$ref": "#/definitions/RelationshipTemporalValues"
+      }
+    ]
+  },
+  "propertyNames": {
+    "type": "string",
+    "pattern": "^((\\d|[a-zA-Z]|_)+(#\\d+)?)$|^(@context)$"
+  }
+}
