@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "id": "https://uri.etsi.org/ngsi-ld/schema/SubscriptionList.json",
+  "title": "NGSI-LD Subscription List",
+  "description": "NGSI-LD Subscription List",
+  "definitions": {
+    "SubscriptionList": {
+      "type": "array",
+      "items": {
+        "$ref": "https://forge.etsi.org/gitlab/NGSI-LD/NGSI-LD/raw/master/schema/subscriptions/Subscription.json#/definitions/Subscription"
+      }
+    }
+  },
+  "allOf": [{
+    "$ref": "#/definitions/SubscriptionList"
+  }]
+}
