@@ -7,5 +7,9 @@ RUN go get
 RUN GOOS=linux GOARCH=arm go build -a -o broker_arm
 
 FROM scratch
+<<<<<<< HEAD
 COPY --from=builder /go/src/github.com/smartfog/fogflow/broker/broker_arm ./broker
+=======
+COPY --from=builder /go/src/fogflow/broker/broker_arm ./broker
+>>>>>>> adding staged build for docker images
 CMD ["/broker"]
