@@ -1,0 +1,11 @@
+# This should be run from parent folder, to give full project context
+FROM golang:1.10.3 as builder
+WORKDIR /go/src/fogflow/
+COPY . .
+WORKDIR /go/src/fogflow/worker
+RUN go get
+RUN GOOS=linux GOARCH=arm go build -a -o worker_arm
+
+FROM scratch
+COPY --from=builder /go/src/fogflow/worker/worker ./
+CMD ["/worker"]
