@@ -1,5 +1,6 @@
 # This should be run from parent folder, to give full project context
 FROM golang:1.10.3 as builder
+<<<<<<< HEAD
 WORKDIR /go/src/github.com/smartfog/fogflow/
 COPY . .
 WORKDIR /go/src/github.com/smartfog/fogflow/worker
@@ -8,4 +9,14 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a
 
 FROM alpine:3.7
 COPY --from=builder /go/src/github.com/smartfog/fogflow/worker/worker ./
+=======
+WORKDIR /go/src/fogflow/
+COPY . .
+WORKDIR /go/src/fogflow/worker
+RUN go get
+RUN CGO_ENABLED=0 go build -a
+
+FROM alpine:3.7
+COPY --from=builder /go/src/fogflow/worker/worker ./
+>>>>>>> aeb0a66... adding staged build for docker images
 CMD ["/worker"]
