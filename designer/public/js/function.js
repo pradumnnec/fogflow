@@ -22,39 +22,656 @@ var blocks = null;
 
 // client to interact with IoT Broker
 var client = new NGSI10Client(config.brokerURL);
+var myFogFunctionExamples = [{
+        name: "Test",
+        topology: {
+            "name": "Test",
+            "description": "just for a simple test",
+            "tasks": [{
+                "name": "Main",
+                "operator": "dummy",
+                "input_streams": [{
+                    "selected_type": "Temperature",
+                    "selected_attributes": [],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }],
+                "output_streams": [{
+                    "entity_type": "Out"
+                }]
+            }]
+        },
+        designboard: {
+            "edges": [{
+                "id": 1,
+                "block1": 2,
+                "connector1": ["stream", "output"],
+                "block2": 1,
+                "connector2": ["streams", "input"]
+            }],
+            "blocks": [{
+                "id": 1,
+                "x": 123,
+                "y": -99,
+                "type": "Task",
+                "module": null,
+                "values": {
+                    "name": "Main",
+                    "operator": "dummy",
+                    "outputs": ["Out"]
+                }
+            }, {
+                "id": 2,
+                "x": -194,
+                "y": -97,
+                "type": "EntityStream",
+                "module": null,
+                "values": {
+                    "selectedtype": "Temperature",
+                    "selectedattributes": ["all"],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }
+            }]
+        },
+        intent: {
+            "topology": "Test",
+            "priority": {
+                "exclusive": false,
+                "level": 0
+            },
+            "qos": "Max Throughput",
+            "geoscope": {
+                "scopeType": "global",
+                "scopeValue": "global"
+            }
+        }
+    },
+    /*{
+        name: "Agent",
+        topology: {"name":"Agent","description":"just for a simple test","tasks":[{"name":"Main","operator":"iotagent","input_streams":[{"selected_type":"Worker","selected_attributes":[],"groupby":"EntityID","scoped":false}],"output_streams":[{"entity_type":"Out"}]}]},
+        designboard: {"edges":[{"id":1,"block1":2,"connector1":["stream","output"],"block2":1,"connector2":["streams","input"]}],"blocks":[{"id":1,"x":123,"y":-99,"type":"Task","module":null,"values":{"name":"Main","operator":"iotagent","outputs":["Out"]}},{"id":2,"x":-194,"y":-97,"type":"EntityStream","module":null,"values":{"selectedtype":"Worker","selectedattributes":["all"],"groupby":"EntityID","scoped":false}}]},
+        intent: {"topology":"Agent","priority":{"exclusive":false,"level":0},"qos":"Max Throughput","geoscope":{"scopeType":"global","scopeValue":"global"}}
+    },*/
+    // {
+    //     name: "PrivateSiteEstimation",
+    //     topology: {
+    //         "name": "PrivateSiteEstimation",
+    //         "description": "to estimate the free parking lots from a private parking site",
+    //         "tasks": [{
+    //             "name": "Estimation",
+    //             "operator": "privatesite",
+    //             "input_streams": [{
+    //                 "selected_type": "PrivateSite",
+    //                 "selected_attributes": [],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }],
+    //             "output_streams": [{
+    //                 "entity_type": "Out"
+    //             }]
+    //         }]
+    //     },
+    //     designboard: {
+    //         "edges": [{
+    //             "id": 1,
+    //             "block1": 2,
+    //             "connector1": ["stream", "output"],
+    //             "block2": 1,
+    //             "connector2": ["streams", "input"]
+    //         }],
+    //         "blocks": [{
+    //             "id": 1,
+    //             "x": 26,
+    //             "y": -47,
+    //             "type": "Task",
+    //             "module": null,
+    //             "values": {
+    //                 "name": "Estimation",
+    //                 "operator": "privatesite",
+    //                 "outputs": ["Out"]
+    //             }
+    //         }, {
+    //             "id": 2,
+    //             "x": -302,
+    //             "y": -87,
+    //             "type": "EntityStream",
+    //             "module": null,
+    //             "values": {
+    //                 "selectedtype": "PrivateSite",
+    //                 "selectedattributes": ["all"],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }
+    //         }]
+    //     },
+    //     intent: {
+    //         "topology": "PrivateSiteEstimation",
+    //         "priority": {
+    //             "exclusive": false,
+    //             "level": 0
+    //         },
+    //         "qos": "Max Throughput",
+    //         "geoscope": {
+    //             "scopeType": "global",
+    //             "scopeValue": "global"
+    //         }
+    //     }
+    // }, {
+    //     name: "PublicSiteEstimation",
+    //     topology: {
+    //         "name": "PublicSiteEstimation",
+    //         "description": "to estimate the free parking lot from a public parking site",
+    //         "tasks": [{
+    //             "name": "PubFreeLotEstimation",
+    //             "operator": "publicsite",
+    //             "input_streams": [{
+    //                 "selected_type": "PublicSite",
+    //                 "selected_attributes": [],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }],
+    //             "output_streams": [{
+    //                 "entity_type": "Out"
+    //             }]
+    //         }]
+    //     },
+    //     designboard: {
+    //         "edges": [{
+    //             "id": 1,
+    //             "block1": 2,
+    //             "connector1": ["stream", "output"],
+    //             "block2": 1,
+    //             "connector2": ["streams", "input"]
+    //         }],
+    //         "blocks": [{
+    //             "id": 1,
+    //             "x": -37,
+    //             "y": -108,
+    //             "type": "Task",
+    //             "module": null,
+    //             "values": {
+    //                 "name": "PubFreeLotEstimation",
+    //                 "operator": "publicsite",
+    //                 "outputs": ["Out"]
+    //             }
+    //         }, {
+    //             "id": 2,
+    //             "x": -340,
+    //             "y": -128,
+    //             "type": "EntityStream",
+    //             "module": null,
+    //             "values": {
+    //                 "selectedtype": "PublicSite",
+    //                 "selectedattributes": ["all"],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }
+    //         }]
+    //     },
+    //     intent: {
+    //         "topology": "PublicSiteEstimation",
+    //         "priority": {
+    //             "exclusive": false,
+    //             "level": 0
+    //         },
+    //         "qos": "Max Throughput",
+    //         "geoscope": {
+    //             "scopeType": "global",
+    //             "scopeValue": "global"
+    //         }
+    //     }
+    // }, {
+    //     name: "ArrivalTimeEstimation",
+    //     topology: {
+    //         "name": "ArrivalTimeEstimation",
+    //         "description": "to estimate when the car will arrive at the destination",
+    //         "tasks": [{
+    //             "name": "CalculateArrivalTime",
+    //             "operator": "connectedcar",
+    //             "input_streams": [{
+    //                 "selected_type": "ConnectedCar",
+    //                 "selected_attributes": [],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }],
+    //             "output_streams": [{
+    //                 "entity_type": "Out"
+    //             }]
+    //         }]
+    //     },
+    //     designboard: {
+    //         "edges": [{
+    //             "id": 1,
+    //             "block1": 2,
+    //             "connector1": ["stream", "output"],
+    //             "block2": 1,
+    //             "connector2": ["streams", "input"]
+    //         }],
+    //         "blocks": [{
+    //             "id": 1,
+    //             "x": -106,
+    //             "y": -93,
+    //             "type": "Task",
+    //             "module": null,
+    //             "values": {
+    //                 "name": "CalculateArrivalTime",
+    //                 "operator": "connectedcar",
+    //                 "outputs": ["Out"]
+    //             }
+    //         }, {
+    //             "id": 2,
+    //             "x": -420,
+    //             "y": -145,
+    //             "type": "EntityStream",
+    //             "module": null,
+    //             "values": {
+    //                 "selectedtype": "ConnectedCar",
+    //                 "selectedattributes": ["all"],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }
+    //         }]
+    //     },
+    //     intent: {
+    //         "topology": "ArrivalTimeEstimation",
+    //         "priority": {
+    //             "exclusive": false,
+    //             "level": 0
+    //         },
+    //         "qos": "Max Throughput",
+    //         "geoscope": {
+    //             "scopeType": "global",
+    //             "scopeValue": "global"
+    //         }
+    //     }
+    // }, {
+    //     name: "ParkingLotRecommendation",
+    //     topology: {
+    //         "name": "ParkingLotRecommendation",
+    //         "description": "to recommend where to park around the destination",
+    //         "tasks": [{
+    //             "name": "WhereToParking",
+    //             "operator": "recommender",
+    //             "input_streams": [{
+    //                 "selected_type": "ConnectedCar",
+    //                 "selected_attributes": ["ParkingRequest"],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }],
+    //             "output_streams": [{
+    //                 "entity_type": "Out"
+    //             }]
+    //         }]
+    //     },
+    //     designboard: {
+    //         "edges": [{
+    //             "id": 1,
+    //             "block1": 2,
+    //             "connector1": ["stream", "output"],
+    //             "block2": 1,
+    //             "connector2": ["streams", "input"]
+    //         }],
+    //         "blocks": [{
+    //             "id": 1,
+    //             "x": -14,
+    //             "y": -46,
+    //             "type": "Task",
+    //             "module": null,
+    //             "values": {
+    //                 "name": "WhereToParking",
+    //                 "operator": "recommender",
+    //                 "outputs": ["Out"]
+    //             }
+    //         }, {
+    //             "id": 2,
+    //             "x": -379,
+    //             "y": -110,
+    //             "type": "EntityStream",
+    //             "module": null,
+    //             "values": {
+    //                 "selectedtype": "ConnectedCar",
+    //                 "selectedattributes": ["ParkingRequest"],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }
+    //         }]
+    //     },
+    //     intent: {
+    //         "topology": "ParkingLotRecommendation",
+    //         "priority": {
+    //             "exclusive": false,
+    //             "level": 0
+    //         },
+    //         "qos": "Max Throughput",
+    //         "geoscope": {
+    //             "scopeType": "global",
+    //             "scopeValue": "global"
+    //         }
+    //     }
+    // }, {
+    //     name: "ArrivalTimeEstimation",
+    //     topology: {
+    //         "name": "ArrivalTimeEstimation",
+    //         "description": "to estimate when the car will arrive at the destination",
+    //         "tasks": [{
+    //             "name": "CalculateArrivalTime",
+    //             "operator": "connectedcar",
+    //             "input_streams": [{
+    //                 "selected_type": "ConnectedCar",
+    //                 "selected_attributes": [],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }],
+    //             "output_streams": [{
+    //                 "entity_type": "Out"
+    //             }]
+    //         }]
+    //     },
+    //     designboard: {
+    //         "edges": [{
+    //             "id": 1,
+    //             "block1": 2,
+    //             "connector1": ["stream", "output"],
+    //             "block2": 1,
+    //             "connector2": ["streams", "input"]
+    //         }],
+    //         "blocks": [{
+    //             "id": 1,
+    //             "x": -106,
+    //             "y": -93,
+    //             "type": "Task",
+    //             "module": null,
+    //             "values": {
+    //                 "name": "CalculateArrivalTime",
+    //                 "operator": "connectedcar",
+    //                 "outputs": ["Out"]
+    //             }
+    //         }, {
+    //             "id": 2,
+    //             "x": -420,
+    //             "y": -145,
+    //             "type": "EntityStream",
+    //             "module": null,
+    //             "values": {
+    //                 "selectedtype": "ConnectedCar",
+    //                 "selectedattributes": ["all"],
+    //                 "groupby": "EntityID",
+    //                 "scoped": false
+    //             }
+    //         }]
+    //     },
+    //     intent: {
+    //         "topology": "ArrivalTimeEstimation",
+    //         "priority": {
+    //             "exclusive": false,
+    //             "level": 0
+    //         },
+    //         "qos": "Max Throughput",
+    //         "geoscope": {
+    //             "scopeType": "global",
+    //             "scopeValue": "global"
+    //         }
+    //     }
+    // },
+    {
+        name: "PrivateSite",
+        topology: {
+            "name": "PrivateSite",
+            "description": "Smart Parking Private Site",
+            "tasks": [{
+                "name": "privatesite",
+                "operator": "privatesite",
+                "input_streams": [{
+                    "selected_type": "Sector",
+                    "selected_attributes": [],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }],
+                "output_streams": [{
+                    "entity_type": "Out"
+                }]
+            }]
+        },
+        designboard: {
+            "edges": [{
+                "id": 1,
+                "block1": 2,
+                "connector1": ["stream", "output"],
+                "block2": 1,
+                "connector2": ["streams", "input"]
+            }],
+            "blocks": [{
+                "id": 1,
+                "x": -64,
+                "y": -118,
+                "type": "Task",
+                "module": null,
+                "values": {
+                    "name": "main",
+                    "operator": "privatesite",
+                    "outputs": ["Out"]
+                }
+            }, {
+                "id": 2,
+                "x": -326,
+                "y": -114,
+                "type": "EntityStream",
+                "module": null,
+                "values": {
+                    "selectedtype": "Sector",
+                    "selectedattributes": ["all"],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }
+            }]
+        },
+        intent: {
+            "topology": "PrivateSite",
+            "priority": {
+                "exclusive": false,
+                "level": 0
+            },
+            "qos": "default",
+            "geoscope": {
+                "scopeType": "global",
+                "scopeValue": "global"
+            }
+        }
+    }, {
+        name: "PublicSite",
+        topology: {
+            "name": "PublicSite",
+            "description": "Smart Parking Public Site",
+            "tasks": [{
+                "name": "publicsite",
+                "operator": "publicsite",
+                "input_streams": [{
+                    "selected_type": "Sensor",
+                    "selected_attributes": [],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }],
+                "output_streams": [{
+                    "entity_type": "Out"
+                }]
+            }]
+        },
+        designboard: {
+            "edges": [{
+                "id": 1,
+                "block1": 1,
+                "connector1": ["stream", "output"],
+                "block2": 2,
+                "connector2": ["streams", "input"]
+            }],
+            "blocks": [{
+                "id": 1,
+                "x": -230,
+                "y": -128,
+                "type": "EntityStream",
+                "module": null,
+                "values": {
+                    "selectedtype": "Sensor",
+                    "selectedattributes": ["all"],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }
+            }, {
+                "id": 2,
+                "x": 32,
+                "y": -121,
+                "type": "Task",
+                "module": null,
+                "values": {
+                    "name": "publicsite",
+                    "operator": "publicsite",
+                    "outputs": ["Out"]
+                }
+            }]
+        },
+        intent: {
+            "topology": "PublicSite",
+            "priority": {
+                "exclusive": false,
+                "level": 0
+            },
+            "qos": "default",
+            "geoscope": {
+                "scopeType": "global",
+                "scopeValue": "global"
+            }
+        }
+    }, {
+        name: "Recommender",
+        topology: {
+            "name": "Recommender",
+            "description": "Smart Parking Recommender",
+            "tasks": [{
+                "name": "recommender",
+                "operator": "recommender",
+                "input_streams": [{
+                    "selected_type": "ConnectedCar",
+                    "selected_attributes": ["ParkingRequest"],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }],
+                "output_streams": [{
+                    "entity_type": "Out"
+                }]
+            }]
+        },
+        designboard: {
+            "edges": [{
+                "id": 1,
+                "block1": 1,
+                "connector1": ["stream", "output"],
+                "block2": 2,
+                "connector2": ["streams", "input"]
+            }],
+            "blocks": [{
+                "id": 1,
+                "x": -294,
+                "y": -130,
+                "type": "EntityStream",
+                "module": null,
+                "values": {
+                    "selectedtype": "ConnectedCar",
+                    "selectedattributes": ["ParkingRequest"],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }
+            }, {
+                "id": 2,
+                "x": 35,
+                "y": -116,
+                "type": "Task",
+                "module": null,
+                "values": {
+                    "name": "recommender",
+                    "operator": "recommender",
+                    "outputs": ["Out"]
+                }
+            }]
+        },
+        intent: {
+            "topology": "Recommender",
+            "priority": {
+                "exclusive": false,
+                "level": 0
+            },
+            "qos": "default",
+            "geoscope": {
+                "scopeType": "global",
+                "scopeValue": "global"
+            }
+        }
+    }, {
+        name: "ConnectedCar",
+        topology: {
+            "name": "ConnectedCar",
+            "description": "Smart Parking Connected Car",
+            "tasks": [{
+                "name": "connectedcar",
+                "operator": "connectedcar",
+                "input_streams": [{
+                    "selected_type": "ConnectedCar",
+                    "selected_attributes": [],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }],
+                "output_streams": [{
+                    "entity_type": "Out"
+                }]
+            }]
+        },
+        designboard: {
+            "edges": [{
+                "id": 1,
+                "block1": 1,
+                "connector1": ["stream", "output"],
+                "block2": 2,
+                "connector2": ["streams", "input"]
+            }],
+            "blocks": [{
+                "id": 1,
+                "x": -280,
+                "y": -142,
+                "type": "EntityStream",
+                "module": null,
+                "values": {
+                    "selectedtype": "ConnectedCar",
+                    "selectedattributes": ["all"],
+                    "groupby": "EntityID",
+                    "scoped": false
+                }
+            }, {
+                "id": 2,
+                "x": 7,
+                "y": -127,
+                "type": "Task",
+                "module": null,
+                "values": {
+                    "name": "connectedcar",
+                    "operator": "connectedcar",
+                    "outputs": ["Out"]
+                }
+            }]
+        },
+        intent: {
+            "topology": "ConnectedCar",
+            "priority": {
+                "exclusive": false,
+                "level": 0
+            },
+            "qos": "default",
+            "geoscope": {
+                "scopeType": "global",
+                "scopeValue": "global"
+            }
+        }
 
-var myFogFunctionExamples = [
-{
-    name: "Test",
-    topology: {"name":"Test","description":"just for a simple test","tasks":[{"name":"Main","operator":"dummy","input_streams":[{"selected_type":"Temperature","selected_attributes":[],"groupby":"EntityID","scoped":false}],"output_streams":[{"entity_type":"Out"}]}]},
-    designboard: {"edges":[{"id":1,"block1":2,"connector1":["stream","output"],"block2":1,"connector2":["streams","input"]}],"blocks":[{"id":1,"x":123,"y":-99,"type":"Task","module":null,"values":{"name":"Main","operator":"dummy","outputs":["Out"]}},{"id":2,"x":-194,"y":-97,"type":"EntityStream","module":null,"values":{"selectedtype":"Temperature","selectedattributes":["all"],"groupby":"EntityID","scoped":false}}]},
-    intent: {"topology":"Test","priority":{"exclusive":false,"level":0},"qos":"Max Throughput","geoscope":{"scopeType":"global","scopeValue":"global"}}
-},/*{
-    name: "Agent",
-    topology: {"name":"Agent","description":"just for a simple test","tasks":[{"name":"Main","operator":"iotagent","input_streams":[{"selected_type":"Worker","selected_attributes":[],"groupby":"EntityID","scoped":false}],"output_streams":[{"entity_type":"Out"}]}]},
-    designboard: {"edges":[{"id":1,"block1":2,"connector1":["stream","output"],"block2":1,"connector2":["streams","input"]}],"blocks":[{"id":1,"x":123,"y":-99,"type":"Task","module":null,"values":{"name":"Main","operator":"iotagent","outputs":["Out"]}},{"id":2,"x":-194,"y":-97,"type":"EntityStream","module":null,"values":{"selectedtype":"Worker","selectedattributes":["all"],"groupby":"EntityID","scoped":false}}]},
-    intent: {"topology":"Agent","priority":{"exclusive":false,"level":0},"qos":"Max Throughput","geoscope":{"scopeType":"global","scopeValue":"global"}}
-},*/{
-    name: "PrivateSiteEstimation",
-    topology: {"name":"PrivateSiteEstimation","description":"to estimate the free parking lots from a private parking site","tasks":[{"name":"Estimation","operator":"privatesite","input_streams":[{"selected_type":"PrivateSite","selected_attributes":[],"groupby":"EntityID","scoped":false}],"output_streams":[{"entity_type":"Out"}]}]},
-    designboard: {"edges":[{"id":1,"block1":2,"connector1":["stream","output"],"block2":1,"connector2":["streams","input"]}],"blocks":[{"id":1,"x":26,"y":-47,"type":"Task","module":null,"values":{"name":"Estimation","operator":"privatesite","outputs":["Out"]}},{"id":2,"x":-302,"y":-87,"type":"EntityStream","module":null,"values":{"selectedtype":"PrivateSite","selectedattributes":["all"],"groupby":"EntityID","scoped":false}}]},
-    intent: {"topology":"PrivateSiteEstimation","priority":{"exclusive":false,"level":0},"qos":"Max Throughput","geoscope":{"scopeType":"global","scopeValue":"global"}}
-}, {
-    name: "PublicSiteEstimation",
-    topology: {"name":"PublicSiteEstimation","description":"to estimate the free parking lot from a public parking site","tasks":[{"name":"PubFreeLotEstimation","operator":"publicsite","input_streams":[{"selected_type":"PublicSite","selected_attributes":[],"groupby":"EntityID","scoped":false}],"output_streams":[{"entity_type":"Out"}]}]} ,
-    designboard:  {"edges":[{"id":1,"block1":2,"connector1":["stream","output"],"block2":1,"connector2":["streams","input"]}],"blocks":[{"id":1,"x":-37,"y":-108,"type":"Task","module":null,"values":{"name":"PubFreeLotEstimation","operator":"publicsite","outputs":["Out"]}},{"id":2,"x":-340,"y":-128,"type":"EntityStream","module":null,"values":{"selectedtype":"PublicSite","selectedattributes":["all"],"groupby":"EntityID","scoped":false}}]},
-    intent: {"topology":"PublicSiteEstimation","priority":{"exclusive":false,"level":0},"qos":"Max Throughput","geoscope":{"scopeType":"global","scopeValue":"global"}}
-}, {
-    name: "ArrivalTimeEstimation",
-    topology:  {"name":"ArrivalTimeEstimation","description":"to estimate when the car will arrive at the destination","tasks":[{"name":"CalculateArrivalTime","operator":"connectedcar","input_streams":[{"selected_type":"ConnectedCar","selected_attributes":[],"groupby":"EntityID","scoped":false}],"output_streams":[{"entity_type":"Out"}]}]},
-    designboard: {"edges":[{"id":1,"block1":2,"connector1":["stream","output"],"block2":1,"connector2":["streams","input"]}],"blocks":[{"id":1,"x":-106,"y":-93,"type":"Task","module":null,"values":{"name":"CalculateArrivalTime","operator":"connectedcar","outputs":["Out"]}},{"id":2,"x":-420,"y":-145,"type":"EntityStream","module":null,"values":{"selectedtype":"ConnectedCar","selectedattributes":["all"],"groupby":"EntityID","scoped":false}}]} ,
-    intent: {"topology":"ArrivalTimeEstimation","priority":{"exclusive":false,"level":0},"qos":"Max Throughput","geoscope":{"scopeType":"global","scopeValue":"global"}}
-}, {
-    name: "ParkingLotRecommendation",
-    topology: {"name":"ParkingLotRecommendation","description":"to recommend where to park around the destination","tasks":[{"name":"WhereToParking","operator":"recommender","input_streams":[{"selected_type":"ConnectedCar","selected_attributes":["ParkingRequest"],"groupby":"EntityID","scoped":false}],"output_streams":[{"entity_type":"Out"}]}]},
-    designboard: {"edges":[{"id":1,"block1":2,"connector1":["stream","output"],"block2":1,"connector2":["streams","input"]}],"blocks":[{"id":1,"x":-14,"y":-46,"type":"Task","module":null,"values":{"name":"WhereToParking","operator":"recommender","outputs":["Out"]}},{"id":2,"x":-379,"y":-110,"type":"EntityStream","module":null,"values":{"selectedtype":"ConnectedCar","selectedattributes":["ParkingRequest"],"groupby":"EntityID","scoped":false}}]},
-    intent: {"topology":"ParkingLotRecommendation","priority":{"exclusive":false,"level":0},"qos":"Max Throughput","geoscope":{"scopeType":"global","scopeValue":"global"}}
-} 
+    }
 ];
 
 
