@@ -182,7 +182,7 @@ function handleNotify(req, ctxObjects, res)
 	for(var i = 0; i < ctxObjects.length; i++) {
 		console.log(ctxObjects[i]);
         try {
-            fogfunction.handler(ctxObjects[i], publish, query, subscribe);    
+        	fogfunction.handler(ctxObjects[i], publish, query, subscribe);
         } catch (error) {
             console.log(error)
         }
@@ -213,5 +213,4 @@ process.on('SIGINT', function() {
 	
 	process.exit(0);
 });
-
 
