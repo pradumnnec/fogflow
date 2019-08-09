@@ -1,16 +1,4 @@
-
-function makeid(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
-
-var myID = makeid(5);
-
+var OrionNGSI = require('ngsijs');
 
 //
 //  contextEntity: the received entities
@@ -21,17 +9,14 @@ var myID = makeid(5);
 //
 exports.handler = function(contextEntity, publish, query, subscribe)
 {
+    console.log("enter into the user-defined fog function");
+
     if (contextEntity == null) {
         return;
-    } 	
+    }   
     if (contextEntity.attributes == null) {
         return;
     }
-    if (contextEntity.attributes.Updater != null && attributes.Updater == myID) {
-        // this is the update from myself
-        return
-    }
-    
     // query the data source to know the available parking lots
     if (contextEntity.attributes.datasource != null) {
         var dsURL = contextEntity.attributes.datasource.value;
@@ -39,19 +24,35 @@ exports.handler = function(contextEntity, publish, query, subscribe)
         console.log(dsURL);
         //var connection = new NGSI.Connection("http://orion.example.com:1026");       
 
+        // The content of the entity's identification is copied
+        // The type is changed so that the entities of the private and public car parks 
+        // are equal, so that the recommender does not make distinctions between them.
+        console.log("=========ID copy========="); 
         var updateEntity = {};
         updateEntity.entityId = {
-            id: contextEntity.entityId.id,
-            type: contextEntity.entityId.type,
+            id: "SmartParking: " + contextEntity.entityId.id,
+            type: "SmartParking",
             isPattern: false
-        };	  	
-        updateEntity.attributes = {};	 
-        updateEntity.attributes.FreeParkingSpots = {type: 'integer', value: 10};   
-        updateEntity.attributes.Updater = {type: 'string', value: myID};              
-            
+        };
+        console.log("=========Attributes copy========="); 
+        updateEntity.attributes = {};
+        //The attribute name is copied
+        updateEntity.attributes.NameParking = {type: 'string', value: contextEntity.attributes.nombre.value};          
+        //The free places attribute is copied 
+        updateEntity.attributes.FreeParkingSpots = {type: 'integer', value: contextEntity.attributes.libres.value};          
+
+        //The coordinates are copied as metadata
+        console.log("Latitude: ", contextEntity.metadata.location.value.latitude); 
+        console.log("Longitude: ",contextEntity.metadata.location.value.longitude); 
+        var location = {
+            latitude: contextEntity.metadata.location.value.latitude,
+            longitude: contextEntity.metadata.location.value.longitude
+        };    
+        updateEntity.attributes.LocationParking = {type: 'object', value: location}; 
+
+        console.log("publish: ", updateEntity); 
         publish(updateEntity);
-        console.log("publish: ", updateEntity);	        
-    }        
+    }         
     
 
     // ============================== publish ======================================================
