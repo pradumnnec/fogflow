@@ -1,7 +1,46 @@
 {
-	"webSrvPort": 80,
-    "discoveryURL": "http://155.54.239.141:443/ngsi9",        
-    "brokerURL": "http://155.54.239.141:8080/ngsi10",
-    "agentIP": "155.54.239.141",
-    "agentPort": 1030
+    "webportal_ip": "192.168.168.183",     
+    "coreservice_ip": "host.docker.internal",   
+    "external_hostip": "host.docker.internal",         
+    "internal_hostip": "host.docker.internal",  
+    "physical_location":{
+		"longitude": -1.131133,
+		"latitude": 37.990905
+    },
+    "site_id": "001",
+    "logging":{
+        "info":"stdout",
+        "error":"stdout",
+        "protocol": "stdout",
+        "debug": "stdout"
+    },
+    "discovery": {
+        "port": 443   
+    },
+    "broker": {
+        "port": 8080
+    },    
+    "master": {
+        "ngsi_agent_port": 1060    
+    },
+    "worker": {
+        "container_autoremove": false,
+        "start_actual_task": true,
+        "capacity": 8              
+    },
+    "designer": {
+        "webSrvPort": 80,
+        "agentPort": 1030               
+    },    
+    "rabbitmq": {
+        "port": 5672,
+        "username": "admin",
+        "password":"mypass"
+    },
+    "https": {
+        "enabled" : false,
+        "my_certificate": "server.pem",
+        "my_key": "server.key",
+        "my_ca": "root_ca.pem"
+    }
 }

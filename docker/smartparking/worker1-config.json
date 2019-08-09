@@ -1,29 +1,41 @@
-{    
-	"my_ip": "155.54.239.141",		
-	"message_bus": "amqp://admin:mypass@rabbitmq:5672/",	
-	"iot_discovery_url": "http://discovery:443/ngsi9",
-	"my_role": "EdgeNode",
-	"container_autoremove": false,        
-	"my_capacity":{
-		"cpu": 6,
-		"memory": 2000,
-		"tasks": 10
-	},	    
-	"physical_location":{
-		"longitude": -1.120129,
-		"latitude": 37.990849,
-		"section": "01",
-		"district": "02",
-		"city": "Tokyo"
-	},	
-	"logical_location": {
-		"node_no": 1,
-		"site_no": 2,	 			
-		"layer_no": 2,
-		"parent_site_no": 1
-	},
-	"logging": {
-		"info":"stdout",
-		"debug":"stdout"		
-	}
+{ 
+    "coreservice_ip": "host.docker.internal",   
+    "external_hostip": "host.docker.internal",         
+    "internal_hostip": "host.docker.internal",  
+    "physical_location":{
+		"longitude": -1.131133,
+		"latitude": 37.990905
+    },
+    "site_id": "001",
+    "logging":{
+        "info":"stdout",
+        "error":"stdout",
+        "protocol": "stdout",
+        "debug": "stdout"
+    },
+    "discovery": {
+        "port": 443   
+    },
+    "broker": {
+        "port": 8080
+    },    
+    "master": {
+        "ngsi_agent_port": 1060    
+    },
+    "worker": {
+        "container_autoremove": false,
+        "start_actual_task": true,
+        "capacity": 8              
+    },
+    "rabbitmq": {
+        "port": 5672,
+        "username": "admin",
+        "password":"mypass"
+    },
+    "https": {
+        "enabled" : false,
+        "my_certificate": "server.pem",
+        "my_key": "server.key",
+        "my_ca": "root_ca.pem"
+    }
 }

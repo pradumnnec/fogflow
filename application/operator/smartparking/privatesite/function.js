@@ -1,14 +1,4 @@
-function makeid(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
-
-var myID = makeid(5);
+var OrionNGSI = require('ngsijs');
 
 //
 //  contextEntity: the received entities
@@ -19,16 +9,12 @@ var myID = makeid(5);
 //
 exports.handler = function(contextEntity, publish, query, subscribe)
 {
-    if (contextEntity == null) {
-        return;
-    } 	
-    if (contextEntity.attributes == null) {
-        return;
-    }
-    if (contextEntity.attributes.Updater != null && attributes.Updater == myID) {
-        // this is the update from myself
-        return
-    }    
+	if (contextEntity == null) {
+		return;
+	} 	
+	if (contextEntity.attributes == null) {
+		return;
+	}
 
     // query the data source to know the available parking lots
     if (contextEntity.attributes.datasource != null) {
@@ -38,14 +24,33 @@ exports.handler = function(contextEntity, publish, query, subscribe)
         //var connection = new NGSI.Connection("http://orion.example.com:1026");       
 
         var updateEntity = {};
+
+        // The content of the entity's identification is copied
+        // The type is changed so that the entities of the private and public car parks 
+        // are equal, so that the recommender does not make distinctions between them.
+        console.log("=========ID copy========="); 
         updateEntity.entityId = {
-            id: contextEntity.entityId.id,
-            type: contextEntity.entityId.type,
+            id: "SmartParking: " + contextEntity.entityId.id,
+            type: "SmartParking",
             isPattern: false
-        };	  	
-        updateEntity.attributes = {};	 
-        updateEntity.attributes.FreeParkingSpots = {type: 'integer', value: 10};                
-        updateEntity.attributes.Updater = {type: 'string', value: myID};              
+        };
+
+        console.log("=========Attributes copy========="); 
+        updateEntity.attributes = {};
+        //The attribute name is copied
+        //In this case the O.R.A. does not have a name attribute, so it puts its id in
+        updateEntity.attributes.NameParking = {type: 'string', value: contextEntity.entityId.id};          
+        //The free places attribute is copied 
+        updateEntity.attributes.FreeParkingSpots = {type: 'integer', value: contextEntity.attributes.libres.value};          
+
+        //The coordinates are copied as metadata
+        console.log("Latitude: ", contextEntity.metadata.location.value.latitude); 
+        console.log("Longitude: ",contextEntity.metadata.location.value.longitude); 
+        var location = {
+            latitude: contextEntity.metadata.location.value.latitude,
+            longitude: contextEntity.metadata.location.value.longitude
+        };    
+        updateEntity.attributes.LocationParking = {type: 'object', value: location};                
             
         publish(updateEntity);
         console.log("publish: ", updateEntity);	        
