@@ -7,9 +7,5 @@ RUN go get
 RUN GOOS=linux GOARCH=arm go build -a -o master_arm
 
 FROM scratch
-<<<<<<< HEAD
 COPY --from=builder /go/src/github.com/smartfog/fogflow/master/master_arm ./master
-=======
-COPY --from=builder /go/src/fogflow/master/master_arm ./master
->>>>>>> adding staged build for docker images
 CMD ["/master"]
