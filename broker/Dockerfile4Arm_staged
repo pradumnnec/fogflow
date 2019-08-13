@@ -1,11 +1,11 @@
 # This should be run from parent folder, to give full project context
 FROM golang:1.10.3 as builder
-WORKDIR /go/src/fogflow/
+WORKDIR /go/src/github.com/smartfog/fogflow/
 COPY . .
-WORKDIR /go/src/fogflow/broker
+WORKDIR /go/src/github.com/smartfog/fogflow/broker
 RUN go get
 RUN GOOS=linux GOARCH=arm go build -a -o broker_arm
 
 FROM scratch
-COPY --from=builder /go/src/fogflow/broker/broker_arm ./broker
+COPY --from=builder /go/src/github.com/smartfog/fogflow/broker/broker_arm ./broker
 CMD ["/broker"]
