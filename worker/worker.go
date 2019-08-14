@@ -57,7 +57,7 @@ func (w *Worker) Start(config *Config) bool {
 		} else {
 			w.selectedBrokerURL = "http://" + config.InternalIP + ":" + strconv.Itoa(config.Broker.Port) + "/ngsi10"
 		}
-		w.httpBrokerURL = "http://" + config.InternalIP + ":" + strconv.Itoa(config.Broker.Port+2) + "/ngsi10"
+		w.httpBrokerURL = "http://" + config.InternalIP + ":" + strconv.Itoa(config.Broker.Port) + "/ngsi10"
 	} else {
 		// find a nearby IoT Broker
 		for {
