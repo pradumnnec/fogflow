@@ -1,5 +1,5 @@
 {
-    "webportal_ip": "192.168.168.183",     
+    "webportal_ip": "host.docker.internal",     
     "coreservice_ip": "host.docker.internal",   
     "external_hostip": "host.docker.internal",         
     "internal_hostip": "host.docker.internal",  
@@ -15,10 +15,10 @@
         "debug": "stdout"
     },
     "discovery": {
-        "port": 443   
+        "http_port": 8081
     },
     "broker": {
-        "port": 8080
+        "http_port": 8082
     },    
     "master": {
         "ngsi_agent_port": 1060    
@@ -29,7 +29,7 @@
         "capacity": 8              
     },
     "designer": {
-        "webSrvPort": 80,
+        "webSrvPort": 8080,
         "agentPort": 1030               
     },    
     "rabbitmq": {

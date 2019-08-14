@@ -14,10 +14,10 @@
         "debug": "stdout"
     },
     "discovery": {
-        "port": 443   
+        "http_port": 8081
     },
     "broker": {
-        "port": 8080
+        "http_port": 8082
     },    
     "master": {
         "ngsi_agent_port": 1060    
@@ -27,6 +27,10 @@
         "start_actual_task": true,
         "capacity": 8              
     },
+    "designer": {
+        "webSrvPort": 8080,
+        "agentPort": 1030               
+    },    
     "rabbitmq": {
         "port": 5672,
         "username": "admin",
