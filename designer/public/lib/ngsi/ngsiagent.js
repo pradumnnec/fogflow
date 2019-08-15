@@ -37,7 +37,9 @@ function ensureType(req, res, next) {
     if (req.is('json')) {
         next();
     } else {
-        next(new errors.UnsupportedContentType(req.headers['content-type']));
+        // next(new errors.UnsupportedContentType(req.headers['content-type']));
+        logger.debug('Received non-json content-type in request ' + req.headers['content-type']);
+        next(new Error('Unsupported content type: ' + req.headers['content-type']));
     }
 }
 
@@ -102,8 +104,9 @@ function handleNotify(req, res, next) {
 	if (notifyHandler) {
         logger.debug('Handling notification from [%s]', req.get('host'));		
 		var ctxs = readContextElements(req.body);
+        // logger.debug('Context parsed', ctxs);	
 		notifyHandler(req, ctxs, res);		
-        next();
+        res.end();
     } else {
         var errorNotFound = new Error({
             message: 'Notification handler not found'
