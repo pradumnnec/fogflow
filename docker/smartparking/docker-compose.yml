@@ -21,7 +21,7 @@ services:
       - discovery
       - broker
     environment:
-      - LOGOPS_LEVEL=DEBUG
+      # - LOGOPS_LEVEL=DEBUG
       - agentIP=designer
   discovery:
     image: fogflow/discovery
