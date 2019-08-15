@@ -123,7 +123,7 @@ function subscribeResult()
         type: 'ConnectedCar',
         isPattern: false}];
     subscribeCtxReq.attributes = ['RecommendedParkingSite'];        
-    subscribeCtxReq.reference =  'http://' + config.agentIP + ':' + config.agentPort + '/notifyContext';
+    subscribeCtxReq.reference =  'http://' + config.agentIP + ':' + config.agentPort ;
     
     client.subscribeContext(subscribeCtxReq).then( function(subscriptionId) {
         console.log(subscriptionId);   
