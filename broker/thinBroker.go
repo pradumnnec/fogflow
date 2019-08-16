@@ -399,9 +399,11 @@ func (tb *ThinBroker) UpdateContext(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	// send out the response
+	w.WriteHeader(200)
+
 	updateCtxResp := UpdateContextResponse{}
-	updateCtxResp.ErrorCode.Code = 200
-	updateCtxResp.ErrorCode.ReasonPhrase = "OK"
+	// updateCtxResp.ErrorCode.Code = 200
+	// updateCtxResp.ErrorCode.ReasonPhrase = "OK"
 	w.WriteJson(&updateCtxResp)
 
 	if r.Header.Get("User-Agent") == "lightweight-iot-broker" {
