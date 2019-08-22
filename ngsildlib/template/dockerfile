@@ -2,4 +2,5 @@ FROM mhart/alpine-node
 
 WORKDIR /app
 ADD . /app
+RUN npm install
 ENTRYPOINT [ "node", "main.js" ]

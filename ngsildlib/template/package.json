@@ -1,0 +1,15 @@
+{
+    "name": "fogfunction",
+    "version": "2.0.0",
+    "description": "template to create your own fog function based on NGSI-LD",
+    "author": "...",
+    "main": "main.js",
+    "scripts": {
+        "start": "node main.js"
+    },
+    "dependencies": {
+        "ngsildlib": "./ngsilib",
+        "jsonld": "^1.6.2",
+        "lodash": "^4.17.15"
+    }
+}

@@ -1,10 +1,9 @@
 'use strict';
-
-const NGSIClient = require('./ngsi/ngsiclient.js');
-const NGSIAgent = require('./ngsi/ngsiagent.js');
+const NGSILD = require('ngsildlib');
 const fogfunction = require('./function.js');
+const ld = require('lodash')
 
-var ngsi10client = null;
+var NGSILDClient = null;
 var brokerURL;
 var outputs = [];
 var threshold = 30;
@@ -25,7 +24,7 @@ function stopApp()
 }
 
 // handle the commands received from the engine
-function handleAdmin(req, commands, res) 
+function handleAdmin(commands) 
 {   
     console.log('=============configuration commands=============');
     console.log(commands);
@@ -33,8 +32,6 @@ function handleAdmin(req, commands, res)
     handleCmds(commands);
     
     isConfigured = true;
-    
-    res.status(200).json({});
 }
 
 function handleCmds(commands) 
@@ -65,7 +62,7 @@ function handleCmd(commandObj)
 function connectBroker(cmd) 
 {
     brokerURL = cmd.brokerURL;
-    ngsi10client = new NGSIClient.NGSI10Client(brokerURL);
+    NGSILDClient = new NGSILD.Client(brokerURL);
     console.log('connected to broker', cmd.brokerURL);
 }
 
@@ -97,7 +94,7 @@ function sendUpdateWithinBuffer()
             tmp.ctxObj.entityId.type = outputs[i].type;
         }
         
-        ngsi10client.updateContext(tmp.ctxObj).then( function(data) {
+        NGSILDClient.updateContext(tmp.ctxObj).then( function(data) {
         console.log('======send update======');
             console.log(data);
         }).catch(function(error) {
@@ -112,16 +109,14 @@ function sendUpdateWithinBuffer()
 //
 // query results from the assigned nearby IoT broker
 //
-function query(queryCtxReq, f)
+function query(id, query, attrs)
 {    
-    if (ngsi10client == null) {
+    if (NGSILDClient == null) {
         console.log("=== broker is not configured for your query");
         return
     }
 
-    ngsi10client.queryContext(queryCtxReq).then(f).catch( function(error) {
-        console.log('failed to subscribe context');
-    });
+    return NGSILDClient.query(id, query, attrs)
 }
 
 //
@@ -129,24 +124,20 @@ function query(queryCtxReq, f)
 //
 function subscribe(subscribeCtxReq)
 {
-    if (ngsi10client == null) {
+    if (NGSILDClient == null) {
         console.log("=== broker is not configured for your subscription");
         return
     }    
     
-    subscribeCtxReq.reference =  myReferenceURL;
+    ld.set(subscribeCtxReq, 'notification.endpoint', myReferenceURL)
     
     console.log("================trigger my own subscription===================");
     console.log(subscribeCtxReq);
     
-    ngsi10client.subscribeContext(subscribeCtxReq).then( function(subscriptionId) {     
-        console.log("subscription id = " + subscriptionId);   
-        mySubscriptionId = subscriptionId;
-    }).catch(function(error) {
-        console.log('failed to subscribe context');
-    });
+    return NGSILDClient.subscribeContext(subscribeCtxReq)
 }   
     
+// TODO: PROMISIFY
 //
 // publish context entities: 
 //
@@ -154,15 +145,13 @@ function publish(ctxUpdate)
 {
     buffer.push(ctxUpdate)
     
-    if (ngsi10client == null) {
+    if (NGSILDClient == null) {
         console.log("=== broker is not configured for your update");
         return
     }
     
-    for(var i=0; i<buffer.length; i++){
-        var update = buffer[i];
-                
-        ngsi10client.updateContext(update).then( function(data) {
+    for(var update of buffer){
+        NGSILDClient.register(update).then( function(data) {
             console.log('======send update======');
             console.log(data);
         }).catch(function(error) {
@@ -175,11 +164,11 @@ function publish(ctxUpdate)
 }
 
 // handle the received results
-function handleNotify(req, ctxObjects, res) 
+function handleNotify(ctxObjects) 
 {   
     console.log('============handle notify==========================');
     for(var i = 0; i < ctxObjects.length; i++) {
-        console.log(ctxObjects[i]);
+        // console.log(ctxObjects[i]);
         try {
             fogfunction.handler(ctxObjects[i], publish, query, subscribe);    
         } catch (error) {
@@ -200,10 +189,15 @@ try {
   console.error(err)
 }
 
+// create the agent
+const NGSIAgent = new NGSILD.Agent(myport)
+
 // set up the NGSI agent to listen on 
-NGSIAgent.setNotifyHandler(handleNotify);
-NGSIAgent.setAdminHandler(handleAdmin);
-NGSIAgent.start(myport, startApp);
+NGSIAgent.notifyHandler = handleNotify;
+NGSIAgent.adminHandler = handleAdmin;
+
+// start listening
+NGSIAgent.start(startApp);
 
 
 process.on('SIGINT', function() {

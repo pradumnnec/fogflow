@@ -14,10 +14,7 @@ exports.handler = function(contextEntity, publish, query, subscribe)
 
 	if (contextEntity == null) {
 		return;
-	} 	
-	if (contextEntity.attributes == null) {
-		return;
-	}
+    }
 
     // ============================== publish ======================================================
     
