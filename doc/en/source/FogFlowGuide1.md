@@ -115,6 +115,9 @@ For Golang files:
 * limitations under the License.
 */
 ```
+For Python, bash script etc.:
+
+```
 # Copyright 20XX FogFlow Authors.
 
 # This file is part of FogFlow.
