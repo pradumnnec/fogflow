@@ -220,9 +220,47 @@ var  i, j, k int;
 
 *How to check*: manually
 
-#### M7 (Use gofmt before commit for indentation):
+#### M7 (Use gofmt before commit for indentation and other Formatting):
 
-*Rule*: gofmt -w filename
+*Rule*: gofmt -r '(a) -> a' -w demo.go
+
+* Code before applying gofmt
+
+```
+package main
+          import "fmt"
+// this is demo to format code
+            // with gofmt command
+ var a int=2;
+             var b int=5;
+                            var c string= `hello world`;
+       func print(){
+                   fmt.Println("Value for a,b and c is : ");
+                        fmt.Println(a);
+                                 fmt.Println((b));
+                                         fmt.Println(c);
+                         }
+```
+* Code after applying rule
+
+```
+package main
+ 
+import "fmt"
+ 
+// this is demo to format code
+// with gofmt command
+var a int = 2
+var b int = 5
+var c string = `hello world`
+ 
+func print() {
+        fmt.Println("Value for a,b and c is : ")
+        fmt.Println(a)
+        fmt.Println((b))
+        fmt.Println(c)
+}
+```
 
 *Rationale*: This will reformat the code and updates the file.
 
@@ -231,20 +269,20 @@ var  i, j, k int;
 *Rule*: operators (+, *, =, == etc). are followed and preceded by ONE space. Commas are followed by ONE space.
 
 ```
-FogFunction(var1, var2, var3);
-if (var1 == var2)
-{
-  var2 = var3;
+FogFunction(var1, var2, var3) {
+	if (var1 == var2) {
+  		var2 = var3;
+	}
 }
 ```
 
 not
 
 ```
-FogFunction(var1,var2,var3);
-if (var1==var2)
-{
-  var1=var3;
+FogFunction(var1,var2,var3) {
+	if (var1==var2) {
+  		var1=var3;
+	}
 }
 ```
 
