@@ -209,11 +209,47 @@ var  i, j, k int;
 
 *Rule*: the following naming conventions apply:
 
-* CamelCase for class/struct names, e.g. `SubscriptionResponse`.
-* UPPER_LETTER for macro names and `#define` constant, e.g. `LM_E(...)`, `EARTH_RADIUS`
-* camelCase for all other cases, e.g. `connectionMemory`.
+* A name must begin with a letter, and can have any number of additional letters and numbers.
+* A function name cannot start with a number.
+* A function name cannot contain spaces.
+* If the functions with names that start with an uppercase letter will be exported to other packages. If the function name starts with a lowercase letter, it won't be exported to other packages, but you can call this function within the same package.
+* If a name consists of multiple words, each word after the first should be capitalized like this: empName, EmpAddress, etc.
+* function names are case-sensitive (car, Car and CAR are three different variables).
 
-*Rationale*: this rule makes it easy to understand whether we’re dealing with a macro or a constant, or a variable
-for that matter. Same with function vs macro.
+*Rationale*: this rule makes it easy to understand.
 
 *How to check*: manually
+
+#### M7 (Use gofmt before commit for indentation):
+
+*Rule*: gofmt -w filename
+
+*Rationale*: This will reformat the code and updates the file.
+
+#### M8 (Command & operators separation):
+
+*Rule*: operators (+, *, =, == etc). are followed and preceded by ONE space. Commas are followed by ONE space.
+
+```
+FogFunction(var1, var2, var3);
+if (var1 == var2)
+{
+  var2 = var3;
+}
+```
+
+not
+
+```
+FogFunction(var1,var2,var3);
+if (var1==var2)
+{
+  var1=var3;
+}
+```
+
+*Rationale*: easier on the eye.
+
+*How to check*: manually
+
+
