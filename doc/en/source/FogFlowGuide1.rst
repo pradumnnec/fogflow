@@ -1,20 +1,19 @@
 # FogFlow Contribution Guide
 
-This document describes the guidelines to contribute to Orion Context Broker. If you are
+This document describes the guidelines to contribute to FogFlow. If you are
 planning to contribute to the code you should read this document and get familiar with its content.
 
 ## General principles
 
-* Orion Context Broker programming languages are C and C++ (although some side pieces related with script tooling
-  are written in bash and Python).
+* FogFlow programming language is GO (although other  tool like test tool and other script can be written in python , java, bash ).
 * Efficient code (i.e. the one that achieves better performance) is preferred upon inefficient code. Simple code
   (i.e. cleaner and shorter) is preferred upon complex code. Big savings in efficiency with small penalty in
   simplicity are allowed. Big savings in simplicity with small penalty in efficiency are also allowed.
 * New files contributed to Orion must follow the [filesystem layout guidelines](#filesystem-layout-guidelines).
-* Code contributed to Orion Context Broker must follow the [code style guidelines](#code-style-guidelines)
+* Code contributed to FogFlow must follow the [code style guidelines](#code-style-guidelines)
   in order to set a common programming style for all developers working on the code.
 * See also the section on [programming patterns](#programming-patterns) about which ones are allowed and disallowed in the
-  Orion Context Broker code.
+  FogFlow.
 
 Note that contribution workflows themselves (e.g. pull requests, etc.) are described in another document
 ([FIWARE Development Guidelines](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Developer_Guidelines)).
@@ -215,4 +214,3 @@ var  i, j, k int;
 for that matter. Same with function vs macro.
 
 *How to check*: manually
-
