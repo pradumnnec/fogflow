@@ -222,7 +222,7 @@ var  i, j, k int;
 
 #### M7 (Use gofmt before commit for indentation and other Formatting):
 
-*Rule*: gofmt -r '(a) -> a' -w demo.go
+*Rule*: gofmt -r '(a) -> a' -w FileName
 
 * Code before applying gofmt
 
@@ -261,8 +261,9 @@ func print() {
         fmt.Println(c)
 }
 ```
-
+Note use gofmt /path/to/package for package formating
 *Rationale*: This will reformat the code and updates the file.
+*How to check*: manually
 
 #### M8 (Command & operators separation):
 
@@ -290,4 +291,198 @@ FogFunction(var1,var2,var3) {
 
 *How to check*: manually
 
+### ‘MUST follow’ rules 
+
+#### S1 (Error management):
+
+*Rule*: Error returned in the second argument should be managed.
+
+* Bad implementation
+```
+FogContextElement, _ := preprocess(UpdateContextElement)
+```
+* Good implementation
+
+```
+preprocessed, err := preprocess(bytes)
+if err != nil {
+  return Message{}, err
+}
+```
+
+#### S2 (Error printing message):
+
+*Rule*: An error string shall neither be capitalized nor end with a punctuation according to Go standards.
+
+* Bad implementation
+```
+if len(in) == 0 {
+  return "", fmt.Errorf("Input is empty")
+}
+```
+* Good implementation
+
+```
+if len(in) == 0 {
+	return nil, errors.New("input is empty")
+}
+```
+#### S3 (Avoid nesting):
+
+*Rule*: avoid nesting while writing the code.
+
+* Bad implementation
+
+```
+func FogLine(msg *Message, in string, ch chan string) {
+    if !startWith(in, stringComment) {
+        token, value := parseLine(in)
+        if token != "" {
+            f, contains := factory[string(token)]
+            if !contains {
+                ch <- "ok"
+            } else {
+                data := f(token, value)
+                enrichMessage(msg, data)
+                ch <- "ok"
+            }
+        } else {
+            ch <- "ok"
+            return
+        }
+    } else {
+        ch <- "ok"
+        return
+    }
+}
+```
+* Good implemetation
+
+```
+func FogLine(in []byte, ch chan interface{}) {
+    // Filter empty lines and comment lines
+    if len(in) == 0 || startWith(in, bytesComment) {
+        ch <- nil
+        return
+    }
+
+    token, value := parseLine(in)
+    if token == nil {
+        ch <- nil
+        log.Warnf("Token name is empty on line %v", string(in))
+        return
+    }
+
+    sToken := string(token)
+    if f, contains := factory[sToken]; contains {
+        ch <- f(sToken, value)
+        return
+    }
+
+    log.Warnf("Token %v is not managed by the parser", string(in))
+    ch <- nil
+}
+```
+
+#### S4 (Preconditions)
+
+*Rule*: we strongly recommend for functions to evaluate the parameters and if necessary return error, before starting to process. 
+
+* Bad implementation
+```
+a, err := f1()
+if err == nil {
+    b, err := f2()
+    if err == nil {
+        return b, nil
+    } else {
+        return nil, err
+    }
+} else {
+    return nil, err
+}
+```
+* Good implementation
+
+```
+a, err := f1()
+if err != nil {
+    return nil, err
+}
+b, err := f2()
+if err != nil {
+    return nil, err
+}
+return b, nil
+```
+
+#### S5 (If condition)
+*Rule*: Go have some improved version in if condition 
+
+* Bad implementation in Golang
+
+```
+f, contains := array[index]
+if contains {
+    // Do something
+}
+```
+* Good implementation
+
+```
+if f, contains := array[index]; contains {
+    // Do something
+}
+```
+#### S5 (Switch)
+*Rule*: always use default with switch condition.
+
+* Bad implementation
+```
+switch simpleToken.token {
+case tokenTitle:
+    msg.Title = value
+case tokenAdep:
+    msg.Adep = value
+case tokenAltnz:
+    msg.Alternate = value 
+// Other cases
+}
+```
+
+* Good implementation 
+
+```
+switch simpleToken.token {
+case tokenTitle:
+    msg.Title = value
+case tokenAdep:
+    msg.Adep = value
+case tokenAltnz:
+    msg.Alternate = value
+// Other cases    
+default:
+    log.Errorf("unexpected token type %v", simpleToken.token)
+    return Message{}, fmt.Errorf("unexpected token type %v", simpleToken.token)
+}
+```
+#### S5 (Constants management)
+
+*Rule*:Constants value should be managed by ADEXP and ICAO message
+
+* Bad implementation
+```
+const (
+    AdexpType = 0 // TODO constant
+    IcaoType  = 1
+)
+```
+* Good implementation 
+
+```
+const (
+    AdexpType = iota
+    IcaoType 
+)
+```
 
