@@ -45,7 +45,7 @@ Some additional remarks to take into account when contributing with new PRs:
 
 ## Code style guidelines
 
-Note that currently not all Orion existing code base conforms to these rules. There are some parts of the code that were
+Note that currently not all FogFlow existing code base conforms to these rules. There are some parts of the code that were
 written before the guidelines were established. However, all new code contributions MUST follow these rules and, eventually, old code will be modified to conform to the guidelines.
 
 ### ‘MUST follow’ rules
