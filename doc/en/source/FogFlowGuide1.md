@@ -9,11 +9,8 @@ planning to contribute to the code you should read this document and get familia
 * Efficient code (i.e. the one that achieves better performance) is preferred upon inefficient code. Simple code
   (i.e. cleaner and shorter) is preferred upon complex code. Big savings in efficiency with small penalty in
   simplicity are allowed. Big savings in simplicity with small penalty in efficiency are also allowed.
-* New files contributed to Orion must follow the [filesystem layout guidelines](#filesystem-layout-guidelines).
 * Code contributed to FogFlow must follow the [code style guidelines](#code-style-guidelines)
   in order to set a common programming style for all developers working on the code.
-* See also the section on [programming patterns](#programming-patterns) about which ones are allowed and disallowed in the
-  FogFlow.
 
 Note that contribution workflows themselves (e.g. pull requests, etc.) are described in another document
 ([FIWARE Development Guidelines](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Developer_Guidelines)).
@@ -45,29 +42,6 @@ Some additional remarks to take into account when contributing with new PRs:
 * PR modifications must pass full regression based on existing test (unit, functional, memory, e2e) in addition to whichever new test added due to the new functionality
 * PR should be of an appropriated size that makes review achievable. Too large PRs could be closed with a "please, redo the work in smaller pieces" without any further discussing
 
-## Filesystem layout guidelines
-
-### Directory layout
-
-For a detailed explanation of the directory structure, see [this section in the Development Manual](devel/directoryStructure.md).
-
-### File layout for source code files
-
-Source code files are found under the `src/` directory.
-
-The suffix '.cpp' MUST be used for source files and '.h' MUST be used for header files.
-
-As a general rule, for C/C++ source code, every concept SHOULD have its own module. With a module is referred a
-header file (`.h`) and its corresponding source file (`.cpp`). In some cases only a header file is needed (without any corresponding `.cpp`
-source file): header files containing only constants, macros or inline functions.
-
-A class SHOULD reside in its own module, with the class definition in the header file
-and the implementation of the classes in the source file. The name for this module is the name of the class. E.g.
-the class Subscription resides in the module { `Subscription.h` / `Subscription.cpp` }.
-
-If a class requires related classes (e.g. subclasses or embedded classes), they should reside in the same module,
-but only if these classes are not used anywhere else. If used anywhere else, a new module MUST be created for the
-affected classes.
 
 ## Code style guidelines
 
