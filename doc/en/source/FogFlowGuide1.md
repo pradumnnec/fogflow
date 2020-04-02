@@ -1,16 +1,16 @@
 # FogFlow Contribution Guide
 
 This document describes the guidelines to contribute to FogFlow. If you are
-planning to contribute to the code you should read this document and get familiar with its content.
+planning to contribute in the code you should read this document and get familiar with its content.
 
 ## General principles
 
-* FogFlow programming language is GO (although other  tool like test tool and other script can be written in python , java, bash ).
+* FogFlow programming language is GO (although other  tools like test tools and other script can be written in python , java, bash ).
 * Efficient code (i.e. the one that achieves better performance) is preferred upon inefficient code. Simple code
   (i.e. cleaner and shorter) is preferred upon complex code. Big savings in efficiency with small penalty in
-  simplicity are allowed. Big savings in simplicity with small penalty in efficiency are also allowed.
+  simplicity are allowed. Big savings in simplicity with small penalty in efficiency is also allowed.
 * Code contributed to FogFlow must follow the [code style guidelines](#code-style-guidelines)
-  in order to set a common programming style for all developers working on the code.
+  in order to set a common programming style for all developers working in the code.
 
 Note that contribution workflows themselves (e.g. pull requests, etc.) are described in another document
 ([FIWARE Development Guidelines](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Developer_Guidelines)).
@@ -114,7 +114,7 @@ For Python, bash script etc.:
 ```
 *Rationale*: to have an homogenous copyright header for all files.
 
-*How to check*": checked using either the internal script ```scripts/check_files_compliance.py```, or ```scripts/style_check.sh```
+*How to check*": manually
 
 #### M3 (Function header)
 
@@ -158,7 +158,7 @@ Example:
 
 *Rationale*: two whitespaces is enough. It makes the lines not too long
 
-*How to check*": checked using the internal script ```scripts/style_check.sh```
+*How to check*": manually
 
 #### M5 (Variable declaration):
 
@@ -187,7 +187,7 @@ var  i, j, k int;
 * A function name cannot start with a number.
 * A function name cannot contain spaces.
 * If the functions with names that start with an uppercase letter will be exported to other packages. If the function name starts with a lowercase letter, it won't be exported to other packages, but you can call this function within the same package.
-* If a name consists of multiple words, each word after the first should be capitalized like this: empName, EmpAddress, etc.
+* If a name consists of multiple words, each word after the first should be capitalized like this: empName, empAddress, etc.
 * function names are case-sensitive (car, Car and CAR are three different variables).
 
 *Rationale*: this rule makes it easy to understand.
@@ -286,7 +286,7 @@ if err != nil {
 
 #### S2 (Error printing message):
 
-*Rule*: An error string shall neither be capitalized nor end with a punctuation according to Go standards.
+*Rule*: An error string shall neither be capitalized nor end with a punctuation according to Golang standards.
 
 * Bad implementation
 ```
