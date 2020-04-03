@@ -1,14 +1,14 @@
 # FogFlow Contribution Guide
 
 This document describes the guidelines to contribute to FogFlow. If you are
-planning to contribute in the code you should read this document and get familiar with its content.
+planning to contribute to the code you should read this document and get familiar with its content.
 
 ## General principles
 
-* FogFlow programming language is GO (although other  tools like test tools and other script can be written in python , java, bash ).
+* FogFlow uses GO programing language (although other  tools like test tools and other script can be written in python , java, bash ).
 * Efficient code (i.e. the one that achieves better performance) is preferred upon inefficient code. Simple code
   (i.e. cleaner and shorter) is preferred upon complex code. Big savings in efficiency with small penalty in
-  simplicity are allowed. Big savings in simplicity with small penalty in efficiency is also allowed.
+  simplicity are allowed. Big savings in simplicity with small penalty in efficiency are also allowed.
 * Code contributed to FogFlow must follow the [code style guidelines](#code-style-guidelines)
   in order to set a common programming style for all developers working in the code.
 
@@ -17,35 +17,35 @@ Note that contribution workflows themselves (e.g. pull requests, etc.) are descr
 
 ## Pull Request protocol
 
-As explained in ([FIWARE Development Guidelines](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Developer_Guidelines))
-contributions are done using a pull request (PR). The detailed "protocol" used in such PR is described below:
+As explained in [FIWARE Development Guidelines](https://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/Developer_Guidelines)
+contributions are done using a pull request (PR). The detailed "protocol" used in such PR a is described below:
 
-* Direct commits to master branch (even single-line modifications) are not allowed. Every modification has to come as a PR
-* In case the PR is implementing/fixing a numbered issue, the issue number has to be referenced in the body of the PR at creation time
-* Anybody is welcome to provide comments to the PR (either direct comments or using the review feature offered by Github)
-* Use *code line comments* instead of *general comments*, for traceability reasons (see comments lifecycle below)
+* Direct commits to master branch (even single-line modifications) are not allowed. Every modification has to come as a PR.
+* In case the PR is implementing/fixing a numbered issue, the issue number has to be referenced in the body of the PR at creation time.
+* Anybody is welcome to provide comments to the PR (either direct comments or using the review feature offered by Github).
+* Use *code line comments* instead of *general comments*, for traceability reasons (see comments lifecycle below).
 * Comments lifecycle
-  * Comment is created, initiating a *comment thread*
-  * New comments can be added as responses to the original one, starting a discussion
+  * Comment is created, initiating a *comment thread*.
+  * New comments can be added as responses to the original one, starting a discussion.
   * After discussion, the comment thread ends in one of the following ways:
     * `Fixed in <commit hash>` in case the discussion involves a fix in the PR branch (which commit hash is
-       included as reference)
-    * `NTC`, if finally nothing needs to be done (NTC = Nothing To Change)
+       included as reference).
+    * `NTC`, if finally nothing needs to be done (NTC = Nothing To Change).
  * PR can be merged when the following conditions are met:
-    * All comment threads are closed
+    * All comment threads are closed.
     * All the participants in the discussion have provided a `LGTM` general comment (LGTM = Looks good to me)
- * Self-merging is not allowed (except in rare and justified circumstances)
+ * Self-merging is not allowed (except in rare and justified circumstances).
 
 Some additional remarks to take into account when contributing with new PRs:
 
-* PR must include not only code contributions, but their corresponding pieces of documentation (new or modifications to existing one) and tests
-* PR modifications must pass full regression based on existing test (unit, functional, memory, e2e) in addition to whichever new test added due to the new functionality
-* PR should be of an appropriated size that makes review achievable. Too large PRs could be closed with a "please, redo the work in smaller pieces" without any further discussing
+* PR must include not only code contributions, but their corresponding pieces of documentation (new or modifications to existing one) and tests.
+* PR modifications must pass full regression based on existing test (unit, functional, memory, e2e) in addition to whichever new test added due to the new functionality.
+* PR should be of an appropriated size that makes review achievable. Too large PRs could be closed with a "please, redo the work in smaller pieces" without any further discussing.
 
 
 ## Code style guidelines
 
-Note that currently not all FogFlow existing code base conforms to these rules. There are some parts of the code that were
+Note that, currently not all FogFlow's existing code base conforms to these rules. There are some parts of the code that were
 written before the guidelines were established. However, all new code contributions MUST follow these rules and, eventually, old code will be modified to conform to the guidelines.
 
 ### ‘MUST follow’ rules
@@ -56,7 +56,7 @@ written before the guidelines were established. However, all new code contributi
 NOT depend on inclusions of other header files. Also, all header and source files MUST NOT include any header files it
 does not need itself.
 
-*Rationale*: each file should not depend on the inclusions other files have/doesn’t have. Also, if a header file
+*Rationale*: each file should not depend on the inclusions other files have/don’t have. Also, if a header file
 includes more files than it needs, its ‘clients’ has no other choice than to include those ‘extra’ files as
 well. This sometimes leads to conflicts and must be avoided. In addition, it increases the compilation time.
 
@@ -112,9 +112,9 @@ For Python, bash script etc.:
 
 # Author: <the author>
 ```
-*Rationale*: to have an homogenous copyright header for all files.
+*Rationale*: to have a homogenous copyright header for all files.
 
-*How to check*": manually
+*How to check*: manually
 
 #### M3 (Function header)
 
@@ -150,15 +150,15 @@ Example:
 
 *Rationale*: the code is simply easier to read when prepared like this
 
-*How to check*": manually
+*How to check*: manually
 
 #### M4 (Indent)
 
 *Rule*: Use only spaces (i.e. no tabs), and indent TWO spaces at a time.
 
-*Rationale*: two whitespaces is enough. It makes the lines not too long
+*Rationale*: two whitespaces are enough. It does not makes the lines too long
 
-*How to check*": manually
+*How to check*: manually
 
 #### M5 (Variable declaration):
 
@@ -166,7 +166,7 @@ Example:
 
 ```
 var  i  int;
-var j   int;
+var  j  int;
 ```
 
 The following usage MUST be avoided:
@@ -187,16 +187,16 @@ var  i, j, k int;
 * A function name cannot start with a number.
 * A function name cannot contain spaces.
 * If the functions with names that start with an uppercase letter will be exported to other packages. If the function name starts with a lowercase letter, it won't be exported to other packages, but you can call this function within the same package.
-* If a name consists of multiple words, each word after the first should be capitalized like this: empName, empAddress, etc.
+* If a function name consists of multiple words, use camel case to represent such names, for example: empName, empAddress, etc.
 * function names are case-sensitive (car, Car and CAR are three different variables).
 
 *Rationale*: this rule makes it easy to understand.
 
 *How to check*: manually
 
-#### M7 (Use gofmt before commit for indentation and other Formatting):
+#### M7 (Use gofmt before commit for indentation and other formatting):
 
-*Rule*: gofmt -r '(a) -> a' -w FileName
+*Rule*: gofmt -r '(a) -> a' -w <FileName>
 
 * Code before applying gofmt
 
@@ -235,16 +235,16 @@ func print() {
         fmt.Println(c)
 }
 ```
-Note use gofmt /path/to/package for package formating
+*Note use gofmt /path/to/package for package formating.
 *Rationale*: This will reformat the code and updates the file.
 *How to check*: manually
 
 #### M8 (Command & operators separation):
 
-*Rule*: operators (+, *, =, == etc). are followed and preceded by ONE space. Commas are followed by ONE space.
+*Rule*: operators (+, *, =, == etc) are followed and preceded by ONE space. Commas are followed by ONE space.
 
 ```
-FogFunction(var1, var2, var3) {
+FogFunction(va`r1, var2, var3) {
 	if (var1 == var2) {
   		var2 = var3;
 	}
@@ -442,7 +442,7 @@ default:
 ```
 #### S5 (Constants management)
 
-*Rule*:Constants value should be managed by ADEXP and ICAO message
+*Rule*:Constant value should be managed by ADEXP and ICAO message
 
 * Bad implementation
 ```
