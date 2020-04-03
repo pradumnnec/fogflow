@@ -196,7 +196,7 @@ var  i, j, k int;
 
 #### M7 (Use gofmt before commit for indentation and other formatting):
 
-*Rule*: gofmt -r '(a) -> a' -w <FileName>
+*Rule*: gofmt -r '(a) -> a' -w FileName
 
 * Code before applying gofmt
 
