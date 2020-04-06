@@ -265,7 +265,7 @@ FogFunction(var1,var2,var3) {
 
 *How to check*: manually
 
-### ‘MUST follow’ rules 
+### ‘SHOULD follow’ rules 
 
 #### S1 (Error management):
 
