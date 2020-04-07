@@ -817,6 +817,7 @@ func (tb *ThinBroker) sendReliableNotifyToNgsiv1Subscriber(elements []ContextEle
 		tb.subscriptions_lock.Unlock()
 	}
 	subscriberURL := subscription.Reference
+	IsOrionBroker := subscription.Subscriber.IsOrion
 	if subscription.Subscriber.RequireReliability == true && len(subscription.Subscriber.NotifyCache) > 0 {
 		DEBUG.Println("resend notify:  ", len(subscription.Subscriber.NotifyCache))
 		for _, pCtxElem := range subscription.Subscriber.NotifyCache {
@@ -825,7 +826,8 @@ func (tb *ThinBroker) sendReliableNotifyToNgsiv1Subscriber(elements []ContextEle
 		subscription.Subscriber.NotifyCache = make([]*ContextElement, 0)
 	}
 	tb.subscriptions_lock.Unlock()
-	err := postNotifyContext(elements, sid, subscriberURL, false, tb.SecurityCfg)
+	err := postNotifyContext(elements, sid, subscriberURL, IsOrionBroker, tb.SecurityCfg)
+	INFO.Println("NOTIFY: ", len(elements), ", ", sid, ", ", subscriberURL, ", ", IsOrionBroker)
 	if err != nil {
 		INFO.Println("NOTIFY is not received by the subscriber, ", subscriberURL)
 
@@ -855,6 +857,7 @@ func (tb *ThinBroker) sendReliableNotifyToNgsiv2Subscriber(elements []ContextEle
 		tb.v2subscriptions_lock.Unlock()
 	}
 	subscriberURL := v2subscription.Notification.Http.Url
+	//IsOrionBroker := v2subscription.Subscriber.IsOrion
 	if v2subscription.Subscriber.RequireReliability == true && len(v2subscription.Subscriber.NotifyCache) > 0 {
 		DEBUG.Println("resend notify:  ", len(v2subscription.Subscriber.NotifyCache))
 		for _, pCtxElem := range v2subscription.Subscriber.NotifyCache {
@@ -864,6 +867,7 @@ func (tb *ThinBroker) sendReliableNotifyToNgsiv2Subscriber(elements []ContextEle
 	}
 	tb.v2subscriptions_lock.Unlock()
 	err := postNotifyContext(elements, sid, subscriberURL, true, tb.SecurityCfg)
+	INFO.Println("NOTIFY: ", len(elements), ", ", sid, ", ", subscriberURL, ", ", true)
 	if err != nil {
 		INFO.Println("NOTIFY is not received by the subscriber, ", subscriberURL)
 
@@ -1017,6 +1021,17 @@ func (tb *ThinBroker) Subscriptionv2Context(w rest.ResponseWriter, r *rest.Reque
 	subRespv2.SubscriptionError.SubscriptionId = subID
 	w.WriteHeader(http.StatusCreated)
 	w.WriteJson(&subRespv2)
+	if r.Header.Get("Destination") == "orion-broker" {
+		subReqv2.Subscriber.IsOrion = true
+	} else {
+		subReqv2.Subscriber.IsOrion = false
+	}
+
+	if r.Header.Get("User-Agent") == "lightweight-iot-broker" {
+		subReqv2.Subscriber.IsInternal = true
+	} else {
+		subReqv2.Subscriber.IsInternal = false
+	}
 
 	subReqv2.Subscriber.BrokerURL = tb.MyURL
 

@@ -11,7 +11,6 @@ import (
 )
 
 func postNotifyContext(ctxElems []ContextElement, subscriptionId string, URL string, IsOrionBroker bool, httpsCfg *HTTPS) error {
-	//INFO.Println("NOTIFY: ", URL)
 	elementRespList := make([]ContextElementResponse, 0)
 
 	if IsOrionBroker == true {
@@ -36,7 +35,6 @@ func postNotifyContext(ctxElems []ContextElement, subscriptionId string, URL str
 	if err != nil {
 		return err
 	}
-
 	req, err := http.NewRequest("POST", URL+"/notifyContext", bytes.NewBuffer(body))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
@@ -119,7 +117,6 @@ func postOrionV2NotifyContext(ctxElems []ContextElement, URL string) error {
 	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
-
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if resp != nil {
