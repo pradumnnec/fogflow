@@ -1,6 +1,6 @@
 import os,sys
 # change the path accoring to the test folder in system
-sys.path.append('/home/ubuntu/fogflow/test/UnitTest')
+sys.path.append('/Go/src/fog/fogflow/test/UnitTest')
 from datetime import datetime
 import copy 
 import json
@@ -11,7 +11,7 @@ import data
 import sys
 
 # change it by broker ip and port
-brokerIp="http://192.168.100.120:8070"
+brokerIp="http://192.168.100.112:8070"
 
 # testCase 1
 '''

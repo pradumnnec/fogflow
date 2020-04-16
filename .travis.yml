@@ -1,43 +1,52 @@
-sudo: required
+matrix:
+  include:
 
-language: go
+    - language: go
+      
+      sudo: required
+      go:
+          - 1.13.x
 
-go:
-    - 1.13.x
-
-install: 
-    - docker --version
+      install: 
+          - docker --version
     
-    - echo "build discovery"
-    - cd discovery
-    - pwd
-    - sh build
+          - echo "build discovery"
+          - cd discovery
+          - pwd
+          - sh build
 
-    - echo "build broker"
-    - cd ../broker
-    - pwd
-    - sh build
+          - echo "build broker"
+          - cd ../broker
+          - pwd
+          - sh build
 
-    - echo "build worker"
-    - cd ../worker
-    - pwd
-    - sh build
+          - echo "build worker"
+          - cd ../worker
+          - pwd
+          - sh build
 
-    - echo "build master"
-    - cd ../master
-    - pwd
-    - sh build
+          - echo "build master"
+          - cd ../master
+          - pwd
+          - sh build
     
-    - echo "build designer"
-    - cd ../master
-    - pwd
-    - sh build    
+          - echo "build designer"
+          - cd ../master
+          - pwd
+          - sh build    
 
-before_script:
-    - go get -u golang.org/x/lint/golint
+      before_script:
+          - go get -u golang.org/x/lint/golint
 
 
-script:
+      script:
 
-notifications:
-    email: false
+      notifications:
+          email: false
+
+    - language: python
+      python: 2.7
+      before_script:
+          - cd test/UnitTest 
+      script:
+          - py.test
