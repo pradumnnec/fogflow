@@ -47,10 +47,10 @@ matrix:
     - language: python
       sudo: required
       python: 
-          - 3.6.x
+          - 3.6
       before_install:
           - echo `python --version`
-          - apt install python-requests
+#          - apt install python-requests
       before_script:
           - cd test/UnitTest 
       script:
