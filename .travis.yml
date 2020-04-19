@@ -50,7 +50,7 @@ matrix:
           - 2.7
       before_install:
 #          - echo `python --version`
-#          - apt install python-requests
+          - pip install requests
       before_script:
           - cd test/UnitTest 
       script:
