@@ -47,11 +47,11 @@ matrix:
     - language: python
       sudo: required
       python: 
-          - 3.7
+          - 2.7
       before_install:
-          - echo `python --version`
+#          - echo `python --version`
 #          - apt install python-requests
       before_script:
           - cd test/UnitTest 
       script:
-          - py.test
+          - pytest
