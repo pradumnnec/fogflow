@@ -48,8 +48,6 @@ matrix:
       python: 2.7.12
       before_install:
           - echo `python --version`
-          - pip install -U pip
-          - pip install -U pytest
       before_script:
           - cd test/UnitTest 
       script:
