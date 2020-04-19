@@ -49,6 +49,7 @@ matrix:
           - "3.6"
       before_install:
           - echo `python --version`
+          - apt-get install python-requests
       before_script:
           - cd test/UnitTest 
       script:
