@@ -49,9 +49,10 @@ matrix:
       python: 
           - 2.7
       before_install:
-#          - echo `python --version`
           - pip install requests
       before_script:
           - cd test/UnitTest 
       script:
           - pytest
+      notifications:
+          email: false
