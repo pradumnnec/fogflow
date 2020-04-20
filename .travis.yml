@@ -54,6 +54,6 @@ matrix:
       before_script:
           - cd test/UnitTest 
       script:
-          - pytest
+          - py.test
       notifications:
           email: false
