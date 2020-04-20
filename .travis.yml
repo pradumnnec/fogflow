@@ -50,6 +50,7 @@ matrix:
           - 2.7
       before_install:
           - pip install requests
+          - pip install pytest
       before_script:
           - cd test/UnitTest 
       script:
