@@ -51,6 +51,10 @@ matrix:
       before_install:
           - pip install requests
           - pip install pytest
+          - pip install py
+          - pip install pluggy
+      install:
+          - true
       before_script:
           - cd test/UnitTest 
       script:
