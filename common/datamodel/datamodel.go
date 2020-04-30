@@ -97,10 +97,16 @@ type Parameter struct {
 	Values []string `json:"values"`
 }
 
+type DockerConfig struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
 type Operator struct {
-	Name        string      `json:"name"`
-	Description string      `json:"description"`
-	Parameters  []Parameter `json:"parameters"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Configs     []DockerConfig `json:"configs"`
+	Parameters  []Parameter    `json:"parameters"`
 }
 
 type Task struct {
@@ -231,10 +237,11 @@ type ScheduledTaskInstance struct {
 
 	OperatorName string
 
-	TaskType     string
-	FunctionCode string
-	DockerImage  string
-	Parameters   []Parameter
+	TaskType      string
+	FunctionCode  string
+	DockerImage   string
+	DockerConfigs []DockerConfig
+	Parameters    []Parameter
 
 	WorkerID string
 

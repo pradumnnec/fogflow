@@ -17,7 +17,12 @@ blocks.register({
             attrs: "editable"
         },    
         {
-            name: "Parameters",
+            name: "DockerConfigs",
+            type: "DockerConfig",
+            attrs: "input"
+        },    
+        {
+            name: "InputParameters",
             type: "Parameter",
             attrs: "input"
         }
@@ -25,7 +30,28 @@ blocks.register({
 });
 
 blocks.register({
-    name: "Parameter",
+    name: "DockerConfig",
+    description: "To specify the required docker configuraiton to run this operator",
+    fields: [
+        {
+            name: "Category",
+            choices: ["Service_Port", "With_Privileged", "Mount_Volume"],
+            attrs: "editable"
+        },{
+            name: "Value",
+            type: "string",
+            attrs: "editable"
+        },
+        {
+            name: "DockerConfig",
+            type: "DockerConfig",
+            attrs: "output"
+        }        
+    ]
+});
+
+blocks.register({
+    name: "InputParameter",
     description: "To specify an controllable parameter of the operator",
     fields: [
         {
@@ -45,7 +71,6 @@ blocks.register({
         }        
     ]
 });
-
 
 }
 

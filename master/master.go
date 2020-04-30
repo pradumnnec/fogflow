@@ -273,6 +273,8 @@ func (master *Master) handleOperatorRegistration(operatorCtxObj *ContextObject) 
 	if err != nil {
 		ERROR.Println("failed to read the given operator")
 	} else {
+		DEBUG.Println(operator)
+
 		master.operatorList_lock.Lock()
 		master.operatorList[operator.Name] = operator
 		master.operatorList_lock.Unlock()
@@ -771,6 +773,18 @@ func (master *Master) GetOperatorParamters(operatorName string) []Parameter {
 	master.operatorList_lock.RUnlock()
 
 	return parameters
+}
+
+func (master *Master) GetOperatorConfigs(operatorName string) []DockerConfig {
+	master.operatorList_lock.RLock()
+
+	operator := master.operatorList[operatorName]
+	configs := make([]DockerConfig, len(operator.Configs))
+	copy(configs, operator.Configs)
+
+	master.operatorList_lock.RUnlock()
+
+	return configs
 }
 
 //

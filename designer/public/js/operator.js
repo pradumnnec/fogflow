@@ -101,7 +101,8 @@ function displayOperatorList(operators)
     html += '<th>Operator</th>';    
     html += '<th>Name</th>';
     html += '<th>Description</th>';    
-    html += '<th>#Parameters</th>';
+    html += '<th>#Parameters</th>';    
+    html += '<th>#Configurations</th>';
     html += '<th>#Implementations</th>';
     html += '</tr></thead>';    
            
@@ -113,8 +114,9 @@ function displayOperatorList(operators)
         html += '<tr>'; 
 		html += '<td>' + entity.entityId.id + '</td>';                        
 		html += '<td>' + operator.name + '</td>';                
-		html += '<td>' + operator.description + '</td>';                
-		html += '<td>' + operator.parameters.length + '</td>';        
+		html += '<td>' + operator.description + '</td>';   
+		html += '<td>' + operator.parameters.length + '</td>';                             
+		html += '<td>' + operator.configs.length + '</td>';        
 		html += '<td>' + 0 + '</td>';                
                               
 		html += '</tr>';	                        
@@ -204,6 +206,9 @@ function boardScene2Operator(scene)
             operator.name = block.values['name'];
             operator.description = block.values['description'];
             
+            // construct its configuration for docker engine
+            operator.configs = findDockerConfig(scene, block.id);
+            
             // construct its controllable parameters
             operator.parameters = findInputParameters(scene, block.id);
             
@@ -216,6 +221,35 @@ function boardScene2Operator(scene)
 }
 
 
+function findDockerConfig(scene, blockId)
+{
+    var configs = [];
+
+    console.log(scene)
+
+    for(var i=0; i<scene.edges.length; i++){
+        var edge = scene.edges[i];
+        
+        if(edge.block2 == blockId) {
+            for(var j=0; j<scene.blocks.length; j++) {
+                var block = scene.blocks[j];
+                
+                console.log(edge)
+                
+                if(block.id == edge.block1 && block.type == "DockerConfig") {
+                    var config = {};
+                    config.name = block.values.category
+                    config.value = block.values.value;
+                    
+                    configs.push(config);
+                }
+            }               
+        }
+    }
+    
+    return configs;
+}
+
 function findInputParameters(scene, blockId)
 {
     var parameters = [];
@@ -227,7 +261,7 @@ function findInputParameters(scene, blockId)
             for(var j=0; j<scene.blocks.length; j++) {
                 var block = scene.blocks[j];
                 
-                if(block.id == edge.block1) {
+                if(block.id == edge.block1 && block.type == "InputParameter") {
                     var parameter = {};
                     parameter.name = block.values.name
                     parameter.values = block.values.values ;
@@ -263,78 +297,97 @@ function initOperatorList()
     var operatorList = [{
         name: "nodejs",
         description: "",
+        configs:[],        
         parameters:[]
     },{
         name: "python",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "iotagent",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "counter",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "anomaly",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "facefinder",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "connectedcar",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "recommender",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "privatesite",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "publicsite",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "pushbutton",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "acoustic",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "speaker",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "dummy",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "geohash",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "converter",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "predictor",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "controller",
         description: "",
+        configs:[],                
         parameters:[]
     },{
         name: "detector",
         description: "",
+        configs:[],                
         parameters:[]
     }
     ];

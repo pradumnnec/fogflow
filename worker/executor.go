@@ -10,6 +10,7 @@ import (
 	"os"
 	"runtime"
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/sethgrid/pester"
@@ -198,7 +199,7 @@ func (e *Executor) writeTempFile(fileName string, fileContent string) {
 	}
 }
 
-func (e *Executor) startContainer(dockerImage string, portNum string, functionCode string, taskID string, adminCfg []interface{}, servicePorts []string) (string, error) {
+func (e *Executor) startContainer(dockerImage string, portNum string, functionCode string, taskID string, adminCfg []interface{}, servicePorts []string, withPrivileged bool, mountedVolumes []string) (string, error) {
 	// prepare the configuration for a docker container, host mode for the container network
 	evs := make([]string, 0)
 	evs = append(evs, fmt.Sprintf("myport=%s", portNum))
@@ -211,7 +212,23 @@ func (e *Executor) startContainer(dockerImage string, portNum string, functionCo
 
 	hostConfig := docker.HostConfig{}
 
-	//if runtime.GOOS == "darwin" {   already use the bridge model
+	// configure the privilege
+	hostConfig.Privileged = withPrivileged
+
+	// configure the volumes to be mounted
+	mounts := make([]docker.HostMount, 0)
+	for _, volume := range mountedVolumes {
+		mount := docker.HostMount{}
+		locations := strings.Split(volume, ":")
+		mount.Type = "bind"
+		mount.Source = locations[0]
+		mount.Target = locations[1]
+
+		mounts = append(mounts, mount)
+	}
+
+	hostConfig.Mounts = mounts
+
 	internalPort := docker.Port(portNum + "/tcp")
 	portBindings := map[docker.Port][]docker.PortBinding{
 		internalPort: []docker.PortBinding{docker.PortBinding{HostIP: "0.0.0.0", HostPort: portNum}}}
@@ -225,9 +242,6 @@ func (e *Executor) startContainer(dockerImage string, portNum string, functionCo
 	}
 
 	hostConfig.PortBindings = portBindings
-	//} else {
-	//	hostConfig.NetworkMode = "host"
-	//}
 
 	// to configure if the container will be removed once it is terminated
 	hostConfig.AutoRemove = e.workerCfg.Worker.ContainerAutoRemove
@@ -356,16 +370,29 @@ func (e *Executor) LaunchTask(task *ScheduledTaskInstance) bool {
 
 	// check if it is required to set up the portmapping for its endpoint services
 	servicePorts := make([]string, 0)
+	withPrivileged := false
+	mountedVolumes := make([]string, 0)
 
-	for _, parameter := range task.Parameters {
+	for _, dockerCfg := range task.DockerConfigs {
+
+		DEBUG.Println(dockerCfg.Name, dockerCfg.Value)
+
 		// deal with the service port
-		if parameter.Name == "service_port" {
-			servicePorts = append(servicePorts, parameter.Values...)
+		if dockerCfg.Name == "Service_Port" {
+			servicePorts = append(servicePorts, dockerCfg.Value)
+		} else if dockerCfg.Name == "With_Privileged" {
+			withPrivileged = strings.EqualFold(dockerCfg.Value, "true")
+		} else if dockerCfg.Name == "Mount_Volume" {
+			mountedVolumes = append(mountedVolumes, dockerCfg.Value)
 		}
 	}
 
+	DEBUG.Println("Service_Port :", servicePorts)
+	DEBUG.Println("With_Privileged :", withPrivileged)
+	DEBUG.Println("Mount_Volume :", mountedVolumes)
+
 	// start a container to run the scheduled task instance
-	containerId, err := e.startContainer(dockerImage, freePort, functionCode, task.ID, commands, servicePorts)
+	containerId, err := e.startContainer(dockerImage, freePort, functionCode, task.ID, commands, servicePorts, withPrivileged, mountedVolumes)
 	if err != nil {
 		ERROR.Println(err)
 		return false
