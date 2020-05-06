@@ -322,6 +322,11 @@ func (flow *FogFlow) expandExecutionPlan(entityID string, inputSubscription *Inp
 			// set up its input streams
 			taskInstance.Inputs = make([]InputStream, 0)
 			for _, inputEntity := range task.Inputs {
+				// exclude the worker profile as the input to task
+				if inputEntity.Type == "Worker" {
+					continue
+				}
+
 				instream := InputStream{}
 				instream.Type = inputEntity.Type
 				instream.ID = inputEntity.ID
