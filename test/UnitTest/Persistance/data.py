@@ -1,158 +1,8 @@
-{
-    "contextElements": [
-  {
-        "entityId": {
-          "id": "Temperature011",
-          "type": "Temperature",
-          "isPattern": false
-        },
-        "attributes": [
-          {
-            "name": "temp",
-            "type": "float",
-            "value": 34
-          }
-        ],
-        "domainMetadata": [
-          {
-          "name": "location",
-          "type": "point",
-          "location": {
-            "latitude": 49.406393,
-            "longitude": 8.684208
-            }
-          }
-    ]
-  }
-  ]
-  }
-
-# data without isPattern
-
-testCase1=\
-{
-    "contextElements": [
-  {
-        "entityId": {
-          "id": "Temperature011",
-          "type": "Temperature"
-        },
-        "attributes": [
-          {
-            "name": "temp",
-            "type": "float",
-            "value": 34
-          }
-        ],
-        "domainMetadata": [
-          {
-          "name": "location",
-          "type": "point",
-          "location": {
-            "latitude": 49.406393,
-            "longitude": 8.684208
-            }
-          }
-    ]
-  }
-  ]
-  }
-
-# data without attributes
-testcase2=\
-{
-    "contextElements": [
-  {
-        "entityId": {
-          "id": "Temperature011",
-          "type": "Temperature"
-        },
-        "domainMetadata": [
-          {
-          "name": "location",
-          "type": "point",
-          "location": {
-            "latitude": 49.406393,
-            "longitude": 8.684208
-            }
-          }
-    ]
-  }
-  ]
-  }
-
-
-# data without domainMetaData
-
-testcase3=\
-{
-    "contextElements": [
-  {
-        "entityId": {
-          "id": "Temperature011",
-          "type": "Temperature",
-          "isPattern": false
-        },
-        "attributes": [
-          {
-            "name": "temp",
-            "type": "float",
-            "value": 34
-          }
-        ]
-  }
-}
-
-# test data to store docker image
-test4=\
-{
-        "entityId": {
-                "type": "DockerImage",
-                "id": "fogflow/counter.latest"
-        },
-        "attributes": [{
-                "name": "image",
-                "type": "string",
-                "value": "fogflow/counter"
-        }, {
-                "name": "tag",
-                "type": "string",
-                "value": "latest"
-        }, {
-                "name": "hwType",
-                "type": "string",
-                "value": "X86"
-        }, {
-                "name": "osType",
-                "type": "string",
-                "value": "Linux"
-        }, {
-                "name": "operator",
-                "type": "string",
-                "value": "counter"
-        }, {
-                "name": "prefetched",
-                "type": "boolean",
-                "value": false
-        }],
-        "domainMetadata": [{
-                "name": "operator",
-                "type": "string",
-                "value": "counter"
-        }, {
-                "name": "location",
-                "type": "global",
-                "value": "global"
-        }]
-}
-
-#test data to store operator
-
-test5=\
+test0=\
 {
         "entityId": {
                 "type": "Operator",
-                "id": "recommender"
+                "id": "test0"
         },
         "attributes": [{
                 "name": "designboard",
@@ -173,13 +23,11 @@ test5=\
                 "value": "global"
         }]
 }
-
-# test data to store fogfunction
-test6=\
+test1=\
 {
         "entityId": {
                 "type": "FogFunction",
-                "id": "FogFunction.Test"
+                "id": "test2"
         },
         "attributes": [{
                 "name": "name",
@@ -268,8 +116,48 @@ test6=\
         }]
 }
 
-# test data to to test
-test7=\
+test2=\
+{
+        "entityId": {
+                "type": "DockerImage",
+                "id": "test2"
+        },
+        "attributes": [{
+                "name": "image",
+                "type": "string",
+                "value": "fogflow/counter"
+        }, {
+                "name": "tag",
+                "type": "string",
+                "value": "latest"
+        }, {
+                "name": "hwType",
+                "type": "string",
+                "value": "X86"
+        }, {
+                "name": "osType",
+                "type": "string",
+                "value": "Linux"
+        }, {
+                "name": "operator",
+                "type": "string",
+                "value": "counter"
+        }, {
+                "name": "prefetched",
+                "type": "boolean",
+                "value": false
+        }],
+        "domainMetadata": [{
+                "name": "operator",
+                "type": "string",
+                "value": "counter"
+        }, {
+                "name": "location",
+                "type": "global",
+                "value": "global"
+        }]
+}
+test3=\
 {
         "entityId": {
                 "type": "Topology",
@@ -366,7 +254,7 @@ test7=\
                                 "id": 5
                         }]
                 }
-        }, {
+        },{
                 "name": "template",
                 "type": "object",
                 "value": {
@@ -410,3 +298,169 @@ test7=\
                 "value": "global"
         }]
 }
+
+
+'''
+  test if entity does not have domainMetaData
+'''
+test4=\
+{
+        "entityId": {
+                "type": "Operator",
+                "id": "test4"
+        },
+        "attributes": [{
+                "name": "designboard",
+                "type": "object",
+                "value": {}
+        }, {
+                "name": "operator",
+                "type": "object",
+                "value": {
+                        "description": "",
+                        "name": "recommender",
+                        "parameters": []
+                }
+        }]
+}
+'''
+   testCase  if entity does not have attribute
+'''
+test5=\
+{
+        "entityId": {
+                "type": "Operator",
+                "id": "test5"
+        }
+        "domainMetadata": [{
+                "name": "location",
+                "type": "global",
+                "value": "global"
+        }]
+}
+
+'''
+   test if type of attributes is string
+'''
+test6=\
+{
+        "entityId": {
+                "type": "Operator",
+                "id": "test6"
+        },
+        "attributes": [{
+                "name": "designboard",
+                "type": "string",
+                "value":"abc"
+        }, {
+                "name": "operator",
+                "type": "object",
+                "value": {
+                        "description": "",
+                        "name": "recommender",
+                        "parameters": []
+                }
+        }],
+        "domainMetadata": [{
+                "name": "location",
+                "type": "global",
+                "value": "global"
+        }]
+}
+
+'''
+   test if value and type of attributes is null
+'''
+test7=\
+{
+        "entityId": {
+                "type": "Operator",
+                "id": "test0"
+        },
+        "attributes": [{
+                "name": "designboard",
+                "type": "null",
+                "value": "null"
+        }, {
+                "name": "operator",
+                "type": "object",
+                "value": {
+                        "description": "",
+                        "name": "recommender",
+                        "parameters": []
+                }
+        }],
+        "domainMetadata": [{
+                "name": "location",
+                "type": "global",
+                "value": "global"
+        }]
+}
+
+'''
+  test if domainMetaData have some location
+'''
+
+test8=\
+{
+        "entityId": {
+                "type": "Operator",
+                "id": "test8"
+        },
+        "attributes": [{
+                "name": "designboard",
+                "type": "object",
+                "value": {}
+        }, {
+                "name": "operator",
+                "type": "object",
+                "value": {
+                        "description": "",
+                        "name": "recommender",
+                        "parameters": []
+                }
+        }],
+        "domainMetadata": [{
+ 			"name": "location",
+ 			"type": "point",
+ 			"location": {
+ 				"latitude": 49.406393,
+ 				"longitude": 8.684208
+ 			}
+ 		}]
+}
+
+'''
+  test if entity have contextElements predicate (test for curl request)
+'''
+test9=\
+{
+ 	"contextElements": [{
+ 		"entityId": {
+ 			"id": "test9",
+ 			"type": "Temperature",
+ 			"isPattern": false
+ 		},
+ 		"attributes": [{
+ 				"name": "temp",
+ 				"type": "string",
+ 				"value": {}
+ 			},
+ 			{
+ 				"name": "temp",
+ 				"type": "string",
+ 				"value": {}
+ 			}
+ 		],
+ 		"domainMetadata": [{
+ 			"name": "location",
+ 			"type": "point",
+ 			"location": {
+ 				"latitude": 49.406393,
+ 				"longitude": 8.684208
+ 			}
+ 		}]
+ 	}]
+ }
+
+
