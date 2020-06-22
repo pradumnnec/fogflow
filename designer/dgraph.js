@@ -23,12 +23,6 @@ function newClient(clientStub) {
     return new dgraph.DgraphClient(clientStub);
 }
 
-/*async function dropAll(dgraphClient) {
-    const op = new dgraph.Operation();
-    op.setDropAll(true);
-    await dgraphClient.alter(op);
-}*/
-
 // Drop All - discard all data and start from a clean slate.
 async function dropAll(dgraphClient) {
     const op = new dgraph.Operation();
@@ -36,7 +30,10 @@ async function dropAll(dgraphClient) {
     await dgraphClient.alter(op);
 }
 
- async function setSchema(dgraphClient) {
+/*
+   create scheema for node
+*/
+async function setSchema(dgraphClient) {
     const schema = `
             attributes: [uid] .
             domainMetadata: [uid] .
@@ -54,6 +51,10 @@ async function dropAll(dgraphClient) {
     await dgraphClient.alter(op);
 }
 
+/*
+   convert object domainmetadata data into string to store entity as single node  
+*/
+
 async function resolveDomainMetaData(data) {
      if ('domainMetadata' in data) {
      	var len=data.domainMetadata.length
@@ -65,6 +66,10 @@ async function resolveDomainMetaData(data) {
 	  }
       }
 }
+
+/*
+   convert object attributes data into string to store entity as single node 
+*/
 
 async function resolveAttributes(data) {
      if ('attributes' in data){
@@ -79,7 +84,10 @@ async function resolveAttributes(data) {
     }
 }
 
-// Create data using JSON.
+/*
+   insert data into database
+*/
+
 async function createData(dgraphClient,ctx) {
     const txn = dgraphClient.newTxn();
     try {
@@ -96,7 +104,10 @@ async function createData(dgraphClient,ctx) {
     }
 }
 
-//app.use (bodyParser.json());
+/*
+   send data to cloud broker
+*/
+
 async function sendData(contextElement) {
 	var  updateCtxReq = {};
 	updateCtxReq.contextElements = [];
@@ -107,16 +118,14 @@ async function sendData(contextElement) {
             url:'http://'+config.brokerIp+':'+config.brokerPort+'/ngsi10/updateContext',
             body:JSON.stringify(updateCtxReq)
         })
-//.then( function(response){
-//            if (response.status == 200) {
-//                return response.data;
-//           } else {
-//                return null;
-//            }
-//        })
 	console.log(updateCtxReq)
 
 }
+
+/*
+   convert string object into structure to register data into cloud broker
+*/
+
 async function changeFromDataToobject(contextElement) {
     contextEle=contextElement['contextElements']
     for (var ctxEle=0; ctxEle < contextEle.length; ctxEle=ctxEle+1) {
@@ -139,10 +148,15 @@ async function changeFromDataToobject(contextElement) {
      sendData(contextEle[ctxEle])
     }
 }
+
 async function sendPostRequestToBroker(contextElement) {
     await changeFromDataToobject(contextElement)	
 }
-// Query for data
+
+/*
+   Query for getting the registered node
+*/
+
 async function queryData(dgraphClient) {
    const query = `{
 
@@ -175,6 +189,10 @@ async function queryData(dgraphClient) {
     sendPostRequestToBroker(responsData)
 }
 
+/*
+   main handler 
+*/
+
 async function db(contextData) {
     const dgraphClientStub = newClientStub();
     const dgraphClient = newClient(dgraphClientStub);
@@ -197,5 +215,4 @@ process.on('unhandledRejection', (reason, promise) => {
   console.log('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-this.axios = require('axios')
 module.exports=db;
