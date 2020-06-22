@@ -410,4 +410,3 @@ test7=\
                 "value": "global"
         }]
 }
-
