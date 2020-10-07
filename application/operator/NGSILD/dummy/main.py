@@ -219,7 +219,7 @@ if __name__ == '__main__':
     adminCfg = json.loads(myCfg)
     handleConfig(adminCfg)
 
-    app.run(host='0.0.0.0', port=8888)
+    app.run(host='0.0.0.0', port=myport)
 
     # timer.cancel()
 
