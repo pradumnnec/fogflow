@@ -67,8 +67,6 @@ def object2Element(ctxObj):
     ctxElement = {}
     ctxElement['id']=ctxObj['id']
     ctxElement['type']=ctxObj['type']
-    print("object2Element")
-    print(ctxObj)
     for key in ctxObj:
         if key != "id" and key != "type" and key != "modifiedAt" and key != "createdAt" and key != "observationSpace" and key != "operationSpace" and key != "location" and key != "@context":
             if ctxObj[key].has_key('createdAt'):
@@ -94,11 +92,23 @@ def handleNotify(contextObjs):
     for ctxObj in contextObjs:
         processInputStreamData(ctxObj)
 
+def show_attributes(ctxObj):
+    print("{")
+    for key in ctxObj:
+        value = ""
+        if key != "id" and key != "type" and key != "modifiedAt" and key != "createdAt" and key != "observationSpace" and key != "operationSpace" and key != "location" and key != "@context":
+            if ctxObj[key].has_key('value'):
+                data  = ctxObj[key]
+                value = data['value']
+            print("attributes = ", key , "value = ", value)
+    print("}")
 
 def processInputStreamData(obj):
     print '===============receive context entity===================='
     print obj
-
+    show_attributes(obj)
+    time.sleep(10)
+    sendDataToBroker(obj)
     global counter
     counter = counter + 1
 
@@ -181,6 +191,7 @@ def cretaeRequest(ctxObj):
     global create
     if brokerURL.endswith('/ngsi10') == True:
         brokerURL = brokerURL.rsplit('/', 1)[0]
+    brokerURL = "http://180.179.214.208:8070"
     if brokerURL == '':
         return
 
@@ -200,15 +211,15 @@ def cretaeRequest(ctxObj):
 
 
 if __name__ == '__main__':
-    handleTimer()
+    #handleTimer()
 
-    myport = int(os.environ['myport'])
+    #myport = int(os.environ['myport'])
 
-    myCfg = os.environ['adminCfg']
-    adminCfg = json.loads(myCfg)
-    handleConfig(adminCfg)
+    #myCfg = os.environ['adminCfg']
+    #adminCfg = json.loads(myCfg)
+    #handleConfig(adminCfg)
 
-    app.run(host='0.0.0.0', port=myport)
+    app.run(host='0.0.0.0', port=8888)
 
     # timer.cancel()
 
