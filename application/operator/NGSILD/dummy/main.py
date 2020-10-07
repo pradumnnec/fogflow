@@ -211,13 +211,13 @@ def cretaeRequest(ctxObj):
 
 
 if __name__ == '__main__':
-    #handleTimer()
+    handleTimer()
 
-    #myport = int(os.environ['myport'])
+    myport = int(os.environ['myport'])
 
-    #myCfg = os.environ['adminCfg']
-    #adminCfg = json.loads(myCfg)
-    #handleConfig(adminCfg)
+    myCfg = os.environ['adminCfg']
+    adminCfg = json.loads(myCfg)
+    handleConfig(adminCfg)
 
     app.run(host='0.0.0.0', port=8888)
 
