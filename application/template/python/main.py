@@ -156,9 +156,11 @@ def publishResult(ctxObj):
 
 def fetchInputByQuery():            
     ctxQueryReq = {}
-
+    print("This is brokerURL")
+    print(brokerURL)
     ctxQueryReq['entities'] = []
-    
+    print("This is input")
+    input={'type':'ChildFound','id':'Stream.ChildFound.01'}
     if id in input:
         ctxQueryReq['entities'].append({'id': input['id'], 'isPattern': False})
     else:                
@@ -174,14 +176,16 @@ def fetchInputByQuery():
         print('failed to query the input data')
         return []
     else:
-        jsonResult = response.json()  
+	print("this is end")
+	entities = []
+        '''jsonResult = response.json()  
         
         entities = []
         
         for ctxElement in jsonResult['contextResponses']:
             ctxObj = element2Object(ctxElement['contextElement'])
             entities.append(ctxObj)
-                    
+        '''            
         return entities
 
 def requestInputBySubscription():

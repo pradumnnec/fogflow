@@ -80,16 +80,15 @@ def object2Element(ctxObj):
     return ctxElement
 
 def readContextElements(data):
-    print(data)
 
     ctxObjects = []
-
-    for response in data['contextResponses']:
-        if response['statusCode']['code'] == 200:
-            ctxObj = element2Object(response['contextElement'])
-            ctxObjects.append(ctxObj)
-
+    print(data['type'])
+    if data['type'] == "Notification" :	
+        for attr in  data['data']:
+	    ctxObj = element2Object(attr)
+	    ctxObjects.append(ctxObj)	
     return ctxObjects
+
 
 
 def handleNotify(contextObjs):
@@ -116,26 +115,23 @@ def setInput(cmd):
     input['type'] = cmd['type']
 
 def publishResult(ctxObj):
-    global brokerUR
+    global brokerURL
+    if brokerURL.endswith('/ngsi10') == True:
+        brokerURL = brokerURL.rsplit('/', 1)[0]
     if brokerURL == '':
         return
 
     ctxElement = object2Element(ctxObj)
 
-    updateCtxReq = {}
-    
-    updateCtxReq['updateAction'] = 'UPDATE'
-    updateCtxReq['contextElements'] = []
-    updateCtxReq['contextElements'].append(ctxElement)
-
-    headers = {'Accept': 'application/json',
-               'Content-Type': 'application/json'}
-    response = requests.post(brokerURL + '/updateContext',
-                             data=json.dumps(updateCtxReq), 
+    headers = {'Accept': 'application/ld+json',
+               'Content-Type': 'application/ld+json',
+               'Link': 'https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld'}
+    response = requests.post(brokerURL + '/ngsi-ld/v1/entities/',
+                             data=json.dumps(ctxElement),
                              headers=headers)
     if response.status_code != 200:
-        print('failed to update context')
-        print(response.text)
+        print 'failed to update context'
+        print response.text
 
 def fetchInputByQuery():            
     ctxQueryReq = {}
@@ -165,12 +161,16 @@ def requestInputBySubscription():
         ctxSubReq['entities'].append({'id': input['id'], 'isPattern': False})
     else:                
         ctxSubReq['entities'].append({'type': input['type'], 'isPattern': True})        
-
+    
+    subrequestUri['uri'] = "http://host.docker.internal:" + os.getenv('myport')
+    subrequestEndPoint['endpoint'] = subrequestUri
+    ctxSubReq['notification'] = subrequestEndPoint
+    
     ctxSubReq['reference'] = "http://host.docker.internal:" + os.getenv('myport')
 
-    headers = {'Accept': 'application/json',
-               'Content-Type': 'application/json'}
-    response = requests.post(brokerURL + '/subscribeContext',
+    headers = {'Accept': 'application/ld+json',
+               'Content-Type': 'application/ld+json', 'Link':'https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld'}
+    response = requests.post(brokerURL + '/ngsi-ld/v1/subscriptions/',
                              data=json.dumps(ctxSubReq), 
                              headers=headers)
 
