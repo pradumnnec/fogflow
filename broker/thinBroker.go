@@ -2086,6 +2086,14 @@ func (tb *ThinBroker) LDCreateSubscription(w rest.ResponseWriter, r *rest.Reques
 					deSerializedSubscription.Id = sid
 
 				}
+				if  len(deSerializedSubscription.WatchedAttributes) ==  0 {
+                                        rest.Error(w, "Missing watched attributes!", http.StatusBadRequest)
+                                        return
+                                }
+                                if len(deSerializedSubscription.Notification.Attributes) == 0 || len(deSerializedSubscription.Notification.Format) == 0 || len(deSerializedSubscription.Notification.Endpoint.URI) == 0 ||  len(deSerializedSubscription.Notification.Endpoint.Accept) == 0  {
+                                        rest.Error(w, "Missing notification parameters!", http.StatusBadRequest)
+                                        return
+                                }
 
 				deSerializedSubscription.Status = "active"                  // others allowed: paused, expired
 				deSerializedSubscription.Notification.Format = "normalized" // other allowed: keyValues
