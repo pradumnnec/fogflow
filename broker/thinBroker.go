@@ -2107,6 +2107,11 @@ func (tb *ThinBroker) LDCreateSubscription(w rest.ResponseWriter, r *rest.Reques
 					rest.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+				if len(deSerializedSubscription.Entities) == 0 {
+                                        rest.Error(w, "Missing entites and its parameter!", http.StatusBadRequest)
+                                        return
+                                }
+
 				w.WriteHeader(http.StatusCreated)
 				//w.WriteJson(deSerializedSubscription.Id)
 				subResp := SubscribeContextResponse{}
