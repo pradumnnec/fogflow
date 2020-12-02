@@ -2086,6 +2086,10 @@ func (tb *ThinBroker) LDCreateSubscription(w rest.ResponseWriter, r *rest.Reques
 					deSerializedSubscription.Id = sid
 
 				}
+				if !strings.HasSuffix(deSerializedSubscription.Type,"Subscription") &&  !strings.HasSuffix(deSerializedSubscription.Type, "subscription") {
+                                        rest.Error(w, "Type not allowed!", http.StatusBadRequest)
+                                        return
+                                }
 				if  len(deSerializedSubscription.WatchedAttributes) ==  0 {
                                         rest.Error(w, "Missing watched attributes!", http.StatusBadRequest)
                                         return
