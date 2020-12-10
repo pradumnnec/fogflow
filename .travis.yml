@@ -113,8 +113,6 @@ script:
     - cd ../v1/
     - pytest -s -v
 
-    - cd ../NGSI-LD/
-    - pytest -s -v 
 
     - cd ../persistance/
     - pytest -s -v 
