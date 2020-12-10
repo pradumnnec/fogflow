@@ -65,7 +65,6 @@ type QoS struct {
 
 type ServiceIntent struct {
 	ID             string         `json:"id"`
-	SType          string         `json:"stype"`
 	QoS            string         `json:"qos"`
 	GeoScope       OperationScope `json:"geoscope"`
 	Priority       Priority       `json:"priority"`
@@ -75,7 +74,6 @@ type ServiceIntent struct {
 
 type TaskIntent struct {
 	ID          string         `json:"id"`
-	SType       string         `json:"stype"`
 	QoS         string         `json:"qos"`
 	GeoScope    OperationScope `json:"geoscope"`
 	Priority    Priority       `json:"priority"`
