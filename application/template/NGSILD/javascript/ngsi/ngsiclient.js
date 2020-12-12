@@ -53,54 +53,7 @@ var NGSI10Client = (function() {
             }
         });
     };
-    
-    // delete context 
-    NGSI10Client.prototype.deleteContext = function deleteContext(entityId) {
-        var contextElement = {};
-        contextElement.entityId = entityId
-        
-        var updateCtxReq = {};
-        updateCtxReq.contextElements = [];
-        updateCtxReq.contextElements.push(contextElement)
-        updateCtxReq.updateAction = 'DELETE'
-        
-        return axios({
-            method: 'post',
-            url: this.brokerURL + '/updateContext',
-            data: updateCtxReq
-        }).then( function(response){
-            if (response.status == 200) {
-                return response.data;
-            } else {
-                return null;
-            }
-        });
-    };    
-    
-    // query context
-    /*NGSI10Client.prototype.queryContext = function queryContext(queryCtxReq) {        
-        return axios({
-            method: 'post',
-            url: this.brokerURL + '/queryContext',
-            data: queryCtxReq
-        }).then( function(response){
-            //console.log(response);
-            if (response.status == 200) {
-                var objectList = [];
-                var ctxElements = response.data.contextResponses;
-                for(var i=0; ctxElements && i<ctxElements.length; i++){                    
-                    //console.log('===========context element=======');
-                    //console.log(ctxElements[i].contextElement)
-                    var obj = CtxElement2JSONObject(ctxElements[i].contextElement);
-                    objectList.push(obj);
-                }
-                return objectList;
-            } else {
-                return null;
-            }
-        });
-    };*/    
-        
+            
     // subscribe context
     NGSI10Client.prototype.subscribeContext = function subscribeContext(subscribeCtxReq) {        
         return axios({
@@ -119,26 +72,6 @@ var NGSI10Client = (function() {
         });
     };    
 
-    // unsubscribe context    
-    /*NGSI10Client.prototype.unsubscribeContext = function unsubscribeContext(sid) {
-        var unsubscribeCtxReq = {};
-        unsubscribeCtxReq.subscriptionId = sid;
-        
-        return axios({
-            method: 'post',
-            url: this.brokerURL + '/unsubscribeContext',
-            data: unsubscribeCtxReq
-        }).then( function(response){
-            if (response.status == 200) {
-                return response.data;
-            } else {
-                return null;
-            }
-        });
-    };        
-    
-    return NGSI10Client;
-})();*/
 
 var NGSI9Client = (function() {
     // initialized with the address of IoT Discovery
