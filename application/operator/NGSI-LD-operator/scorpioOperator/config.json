@@ -11,6 +11,6 @@
 	"type": "ChildFound"
 }, {
 	"command": "scorpio",
-	"scorpioIp":"180.179.214.211:9090"
+	"scorpioIp": "http://180.179.214.211:9090"
 }
 ]

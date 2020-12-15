@@ -11,13 +11,11 @@ import function as fogflow
 
 app = Flask(__name__, static_url_path='')
 
-# global variables
-
-brokerURL = ''
+scorpioBrokerURL = ''
 outputs = []
 
 input = {}
-scorpioIp = [] 
+scorpioIp = '' 
 
 @app.errorhandler(400)
 def not_found(error):
@@ -110,8 +108,8 @@ def handleConfig(configurations):
 
 
 def setScorpioIp(ipCmd):
-    global scorpioIp
-    scorpioIp.append(ipCmd['scorpioIp'])
+    global scorpioBrokerURL
+    scorpioBrokerURL = ipCmd['scorpioIp']
     print("This is scorpioIp")
     print(scorpioIp)
 def setInput(cmd):
@@ -124,19 +122,17 @@ def setInput(cmd):
     input['type'] = cmd['type']
 
 
-def createRequest(ctxObj,scorpioBrokerURL):
-    #global brokerURL
+def createRequest(ctxObj):
+    global scorpioBrokerURL
     if scorpioBrokerURL.endswith('/ngsi10') == True:
         scorpioBrokerURL = scorpioBrokerURL.rsplit('/', 1)[0]
     if scorpioBrokerURL == '':
         return
 
     ctxElement = object2Element(ctxObj)
-    id = ctxElement['id']
-    ctxElement.pop("model")
     headers = {'Accept': 'application/ld+json',
-               'Content-Type': 'application/ld+json',
-               'Link': '<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
+               'Content-Type': 'application/json',
+               'Link': '{{https://json-ld.org/contexts/person.jsonld}}; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
     response = requests.post(scorpioBrokerURL + '/ngsi-ld/v1/entities/',
                              data=json.dumps(ctxElement),
                              headers=headers)
@@ -145,8 +141,9 @@ def createRequest(ctxObj,scorpioBrokerURL):
         print response.text
 
 
-def updateRequest(ctxObj,scorpioBrokerURL):
+def updateRequest(ctxObj):
     #global brokerURL
+    global scorpioBrokerURL
     if scorpioBrokerURL.endswith('/ngsi10') == True:
         brokerURL = scorpioBrokerURL.rsplit('/', 1)[0]
     if scorpioBrokerURL == '':
@@ -155,11 +152,14 @@ def updateRequest(ctxObj,scorpioBrokerURL):
     ctxElement = object2Element(ctxObj)
     eid = ctxElement['id']
     ctxElement.pop('id')
-
+    if ctxELement.has_key(id) == True:
+        ctxElement.pop('id')
+    if ctxElement.pop('type') == True:
+        ctxElement.pop('type')
     headers = {'Accept': 'application/ld+json',
                'Content-Type': 'application/ld+json',
                'Link': '<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
-    response = requests.post(scorpioBrokerURL + '/ngsi-ld/v1/entities/' + eid + '/attrs',
+    response = requests.patch(scorpioBrokerURL + '/ngsi-ld/v1/entities/' + eid + '/attrs',
                              data=json.dumps(ctxElement),
                              headers=headers)
     if response.status_code != 201:
@@ -169,6 +169,7 @@ def updateRequest(ctxObj,scorpioBrokerURL):
 
 def appendRequest(ctxObj):
     #global brokerURL
+    global scorpioBrokerURL
     if scorpioBrokerURL.endswith('/ngsi10') == True:
         scorpioBrokerURL = scorpioBrokerURL.rsplit('/', 1)[0]
     if scorpioBrokerURL == '':
@@ -176,7 +177,11 @@ def appendRequest(ctxObj):
 
     ctxElement = object2Element(ctxObj)
     eid = ctxElement['id']
-    ctxElement.pop('id')
+    
+    if ctxELement.has_key(id) == True:
+        ctxElement.pop('id')
+    if ctxElement.pop('type') == True:
+        ctxElement.pop('type')
 
     headers = {'Accept': 'application/ld+json',
                'Content-Type': 'application/ld+json',

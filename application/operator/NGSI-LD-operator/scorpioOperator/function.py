@@ -1,29 +1,34 @@
 ctxELement = {}
-def handleEntity(ctxObj, create, update append):
+
+def handleEntity(ctxObj, create, update, append):
     print('===============Implement losic====================')
     print(ctxObj)
-    for ctx in ctxObj :
-	handleScorpioUpdate(ctx, create, update append)
+    ctxArray = []
+    ctxArray.append(ctxObj)
+    for ctx in ctxArray :
+	handleScorpioUpdate(ctx, create, update, append)
 
 
-def handleupdateAppend(currUpdateCtx, create, update append):
+def handleupdateAppend(currUpdateCtx, create, update, append):
     
     appendCtx = {}
-    preUpdateCtx = ctxELement['eid']
+    eid = currUpdateCtx['id']
+    preUpdateCtx = ctxELement[eid]
     
-    for key in range currUpdateCtx : 
-        if preUpdateCtx.has_key(key) == false :
+    for key in  currUpdateCtx : 
+        if preUpdateCtx.has_key(key) == False :
 	    appendCtx[key] = currUpdateCtx[key]
     append(appendCtx)
     update(currUpdateCtx)
     
-def handleScorpioUpdate(updateCtx):
+
+def handleScorpioUpdate(ctx, create, update, append):
 	global ctxELement 
-	eid = updateCtx['id']
-	if ctxELement.has_key(id) == true
-	    handleupdateAppend(updateCtx)
-	else
-	    ctxELement['eid'] = updateCtx
-	    create(ctxObj)
+	eid = ctx['id']
+	if ctxELement.has_key(eid) == True:
+	    handleupdateAppend(ctx, create, update, append)
+	else:
+	    ctxELement['eid'] = ctx
+	    create(ctx)
     
     
