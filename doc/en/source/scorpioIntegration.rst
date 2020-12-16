@@ -79,7 +79,8 @@ Integration steps
                     "providedBy": {
                         "type": "Relationship",
                         "object": "urn:ngsi-ld:Person:Bob"
-                     },
+                     	},
+		}
         "location": {
                 "type": "GeoProperty",
                 "value": {
@@ -87,7 +88,7 @@ Integration steps
                         "coordinates": [-8.5, 41.2]
                 }
         }
-}'
+  }'
 
     
     
@@ -105,8 +106,8 @@ Integration steps
 	"brandName": {
 		"type": "Property",
         	"value" : "BM2"
-	}
-}'
+      		}
+     }'
 
 **Type 2**
 
