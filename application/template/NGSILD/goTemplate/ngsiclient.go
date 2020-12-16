@@ -1,4 +1,4 @@
-package ngsi
+package main
 
 import (
         "encoding/json"
@@ -7,14 +7,8 @@ import (
         "fmt"
         "bytes"
 )
-
-
-type NGSILdClient struct {
-        IoTBrokerURL string
-}
-
-func (ld *NGSILdClient)QueryContext(id string) (map[string]interface{},error){
-        req, _ := http.NewRequest("GET", ld.IoTBrokerURL+"/ngsi-ld/v1/entities/" + id, nil)
+func queryContext(id string, IoTBrokerURL string) (map[string]interface{},error){
+        req, _ := http.NewRequest("GET", IoTBrokerURL+"/ngsi-ld/v1/entities/" + id, nil)
         req.Header.Add("Content-Type", "application/ld+json")
         req.Header.Add("Accept", "application/ld+json")
         res, err := http.DefaultClient.Do( req )
@@ -37,13 +31,13 @@ func (ld *NGSILdClient)QueryContext(id string) (map[string]interface{},error){
         return itemsMap,err
 }
 
-func (ld *NGSILdClient)UpdateLdContext(updateCtx map[string]interface{}) error {
+func UpdateLdContext(updateCtx map[string]interface{}, IoTBrokerURL string) error {
         body, err := json.Marshal(updateCtx)
         if err != nil {
                 return  err
         }
 
-        req, err := http.NewRequest("POST", ld.IoTBrokerURL+"/ngsi-ld/v1/entities/", bytes.NewBuffer(body))
+        req, err := http.NewRequest("POST", IoTBrokerURL+"/ngsi-ld/v1/entities/", bytes.NewBuffer(body))
         req.Header.Add("Content-Type", "application/ld+json")
         req.Header.Add("Accept", "application/ld+json")
         req.Header.Add("Link", "<{{link}}>; rel=\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\"; type=\"application/ld+json\"")

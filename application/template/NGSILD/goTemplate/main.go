@@ -6,11 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	//"os/signal"
-//	"strconv"
-//	"syscall"
-
-	. "nec-fogflow/common/ngsi"
+	"os/signal"
+	"strconv"
+	"syscall"
+	mux "github.com/gufranmirza/go-router"
+	"net/http"
+	"log"
 )
 
 //var ctxUpdateBuffer []*ContextObject
@@ -35,7 +36,7 @@ func readConfig(fileName string) []interface{} {
 
 	return commands
 }
-/*
+
 func startApp() {
 	fmt.Println("start to receive input data streams via a listening port")
 }
@@ -45,7 +46,7 @@ func stopApp() {
 }
 
 // handle the commands received from the engine
-func handleAdmin(commands []ConfigCommand) {
+func handleAdmin(commands []interface{}) {
 	fmt.Println("=============configuration commands=============")
 	fmt.Println(commands)
 
@@ -54,19 +55,16 @@ func handleAdmin(commands []ConfigCommand) {
 	isConfigured = true
 }
 
-func onNotify(notifyCtxReq *NotifyContextRequest) {
-	for _, ctxResponse := range notifyCtxReq.ContextResponses {
-		ctxObject := CtxElement2Object(&ctxResponse.ContextElement)
-		fogfunction(ctxObject, publish)
-	}
+func onNotify(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Hello fmt")
 }
 
 func notify2execution() {
-	// apply the configuration
+	 //apply the configuration
 	adminCfg := os.Getenv("adminCfg")
 	fmt.Println("handle the initial admin configuration " + adminCfg)
-	var commands []ConfigCommand
-	json.Unmarshal([]byte(adminCfg), &commands)
+	var commands []interface{}
+	json.Unmarshal([]byte(adminCfg), commands)
 	handleCmds(commands)
 
 	// get the listening port number from the environment variables given by the FogFlow edge worker
@@ -76,12 +74,9 @@ func notify2execution() {
 		return
 	}
 
-	// start the NGSI agent
-	agent := NGSIAgent{Port: myport}
-	agent.Start()
-	agent.SetContextNotifyHandler(onNotify)
-	agent.SetAdminHandler(handleAdmin)
-
+	router := mux.NewRouter()
+	router.POST("/notifyContext", onNotify)
+	log.Fatal(http.ListenAndServe(":" + strconv.Itoa(myport), router))
 	startApp()
 
 	// wait for the signal to stop the main thread
@@ -91,7 +86,7 @@ func notify2execution() {
 	<-c
 
 	stopApp()
-}*/
+}
 
 func element2Object(element map[string]interface{}) map[string]interface{}{
 	ctxObj := make(map[string]interface{})
@@ -114,9 +109,9 @@ func object2Element(element map[string]interface{}) map[string]interface{} {
 }
 
 func query2execution() map[string]interface{} {
-	client := NGSILdClient{IoTBrokerURL: brokerURL}
+	//client := NGSILdClient{IoTBrokerURL: brokerURL}
 	//_, err := 
-	ctxObjects, err := client.QueryContext(inputEntityId)
+	ctxObjects, err := queryContext(inputEntityId,brokerURL)
 	if err != nil {
 		fmt.Println("failed to update context",err)
 		return nil
@@ -125,26 +120,13 @@ func query2execution() map[string]interface{} {
 	return ctxObj
 }
 
-/*
-func handleCmds(commands []ConfigCommand) {
+/*func handleCmds(commands []ConfigCommand) {
 	for _, cmd := range commands {
 		handleCmd(cmd)
 	}
 
 	// send the updates in the buffer
 	sendUpdateWithinBuffer()
-}
-
-func sendUpdateWithinBuffer() {
-	for _, ctxUpdate := range ctxUpdateBuffer {
-		ngsi10client := NGSI10Client{IoTBrokerURL: brokerURL}
-		err := ngsi10client.UpdateContextObject(ctxUpdate)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}
-
-	ctxUpdateBuffer = nil
 }*/
 
 func handleCmds(cmd []interface{}) {
@@ -198,20 +180,10 @@ func publish(ctxUpdate map[string]interface{}) {
 	}
 
 	ctxUpdateEle := object2Element(ctxUpdate)
-	/*for _, ctxUpdate := range ctxUpdateBuffer {
-		ngsi10client := NGSI10Client{IoTBrokerURL: brokerURL}
-		err := ngsi10client.UpdateContextObject(ctxUpdate)
-		if err != nil {
-			fmt.Println(err)
-		}
-	}*/
-
-	client := NGSILdClient{IoTBrokerURL: brokerURL}
-	err := client.UpdateLdContext(ctxUpdateEle)
+	err := UpdateLdContext(ctxUpdateEle, brokerURL)
 	if err != nil {
 		fmt.Println(err)
 	}
-	//ctxUpdateBuffer = nil*/
 }
 
 func runInTestMode(runOnce bool) {
@@ -224,7 +196,7 @@ func runInTestMode(runOnce bool) {
 
 	// query the required inputs and trigger the data processing function
 	element := query2execution()
-        	
+	fogfunction(element, publish)
 	fmt.Println(element)
 }
 
