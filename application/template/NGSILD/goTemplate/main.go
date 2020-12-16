@@ -62,8 +62,7 @@ func onNotify(w http.ResponseWriter, r *http.Request) {
 		notifyElement, _ := tb.getStringInterfaceMap(r)
 		notifyElemtData := notifyElement["data"]
 		notifyEleDatamap := notifyElemtData.([]interface{})
-		notifyCtxResp := NotifyContextResponse{}
-		w.WriteJson(&notifyCtxResp)
+		w.WriteHeader(201)
 		for _, data := range notifyEleDatamap {
 			notifyData := data.(map[string]interface{})
 			fogfunction(notifyData, publish)
