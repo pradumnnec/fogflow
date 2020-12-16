@@ -461,9 +461,9 @@ func ldPostNotifyContext(ldCtxElems []map[string]interface{}, subscriptionId str
 	}
 
 	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Link", "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld")
+	req.Header.Add("Content-Type", "application/ld+json")
+	req.Header.Add("Accept", "application/ld+json")
+	req.Header.Add("Link", "<{{link}}>; rel=\"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld\"; type=\"application/ld+json\"")
 
 	client := &http.Client{}
 	if strings.HasPrefix(URL, "https") == true {

@@ -4,14 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	mux "github.com/gufranmirza/go-router"
 	"io/ioutil"
+	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
-	mux "github.com/gufranmirza/go-router"
-	"net/http"
-	"log"
 )
 
 //var ctxUpdateBuffer []*ContextObject
@@ -56,11 +56,47 @@ func handleAdmin(commands []interface{}) {
 }
 
 func onNotify(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello fmt")
+	if ctype := r.Header.Get("Content-Type"); ctype == "application/json" || ctype == "application/ld+json" {
+		var context []interface{}
+		context = append(context, DEFAULT_CONTEXT)
+		notifyElement, _ := tb.getStringInterfaceMap(r)
+		notifyElemtData := notifyElement["data"]
+		notifyEleDatamap := notifyElemtData.([]interface{})
+		notifyCtxResp := NotifyContextResponse{}
+		w.WriteJson(&notifyCtxResp)
+		for _, data := range notifyEleDatamap {
+			notifyData := data.(map[string]interface{})
+			fogfunction(notifyData, publish)
+		}
+	}
+}
+
+func (tb *ThinBroker) getStringInterfaceMap(r *rest.Request) (map[string]interface{}, error) {
+	// Get bite array of request body
+	reqBytes, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		return nil, err
+	}
+	// Unmarshal using a generic interface
+	var req interface{}
+	err = json.Unmarshal(reqBytes, &req)
+	if err != nil {
+		DEBUG.Println("Invalid Request.")
+		return nil, err
+	}
+	// Parse the JSON object into a map with string keys
+	itemsMap := req.(map[string]interface{})
+
+	if len(itemsMap) != 0 {
+		return itemsMap, nil
+	} else {
+		return nil, errors.New("EmptyPayload!")
+	}
 }
 
 func notify2execution() {
-	 //apply the configuration
+	//apply the configuration
 	adminCfg := os.Getenv("adminCfg")
 	fmt.Println("handle the initial admin configuration " + adminCfg)
 	var commands []interface{}
@@ -76,7 +112,7 @@ func notify2execution() {
 
 	router := mux.NewRouter()
 	router.POST("/notifyContext", onNotify)
-	log.Fatal(http.ListenAndServe(":" + strconv.Itoa(myport), router))
+	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(myport), router))
 	startApp()
 
 	// wait for the signal to stop the main thread
@@ -88,9 +124,9 @@ func notify2execution() {
 	stopApp()
 }
 
-func element2Object(element map[string]interface{}) map[string]interface{}{
+func element2Object(element map[string]interface{}) map[string]interface{} {
 	ctxObj := make(map[string]interface{})
-	for key,ele := range element {
+	for key, ele := range element {
 		ctxObj[key] = ele
 	}
 	return ctxObj
@@ -100,9 +136,9 @@ func object2Element(element map[string]interface{}) map[string]interface{} {
 	ctxObject := make(map[string]interface{})
 	ctxObject["id"] = element["id"]
 	ctxObject["type"] = element["type"]
-	for key, _:= range element {
-		if (key != "id") && (key != "type") && (key != "modifiedAt") && (key != "createdAt") && (key != "observationSpace") && (key != "operationSpace") && (key != "location") && (key != "@context") {
-			ctxObject[key] =  element[key]
+	for key, _ := range element {
+		if key != "id" && key != "type" && key != "modifiedAt" && key != "createdAt" && key != "observationSpace" && key != "operationSpace" && key != "location" && key != "@context" {
+			ctxObject[key] = element[key]
 		}
 	}
 	return ctxObject
@@ -110,10 +146,10 @@ func object2Element(element map[string]interface{}) map[string]interface{} {
 
 func query2execution() map[string]interface{} {
 	//client := NGSILdClient{IoTBrokerURL: brokerURL}
-	//_, err := 
-	ctxObjects, err := queryContext(inputEntityId,brokerURL)
+	//_, err :=
+	ctxObjects, err := queryContext(inputEntityId, brokerURL)
 	if err != nil {
-		fmt.Println("failed to update context",err)
+		fmt.Println("failed to update context", err)
 		return nil
 	}
 	ctxObj := element2Object(ctxObjects)
@@ -134,7 +170,7 @@ func handleCmds(cmd []interface{}) {
 		cmdMapEle := cmdEle.(map[string]interface{})
 		CommandType := cmdMapEle["command"].(string)
 		fmt.Println(CommandType)
-		switch  CommandType { 
+		switch CommandType {
 		case "CONNECT_BROKER":
 			connectBroker(cmdMapEle)
 		case "SET_INPUTS":
