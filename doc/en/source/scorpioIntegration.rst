@@ -33,9 +33,9 @@ Integration steps
 
     curl -iX POST \
     'http://<Scorpio Broker>/ngsi-ld/v1/subscriptions/' \
-      -H 'Content-Type: application/ld+json' \
+      -H 'Content-Type: application/json' \
       -H 'Accept: application/ld+json' \
-      -H 'Link: <{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"' \
+      -H 'Link: {{https://json-ld.org/contexts/person.jsonld}}; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"' \
       -d '
       {
          "type": "Subscription",
@@ -60,9 +60,9 @@ Integration steps
 
      curl -iX POST \
     'http://<Scorpio Broker>/ngsi-ld/v1/entities/' \
-     -H 'Content-Type: application/ld+json' \
+     -H 'Content-Type: application/json' \
      -H 'Accept: application/ld+json' \
-     -H 'Link: <{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"' \
+     -H 'Link: {{https://json-ld.org/contexts/person.jsonld}}; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"' \
     -d '
         {
          "id": "urn:ngsi-ld:Vehicle:A13",
@@ -97,14 +97,14 @@ Integration steps
 
     curl -iX PATCH \
     'http://<Scorpio Broker>/ngsi-ld/v1/entities/urn:ngsi-ld:Vehicle:A13/attrs' \
-      -H 'Content-Type: application/ld+json' \
+      -H 'Content-Type: application/json' \
       -H 'Accept: application/ld+json' \
-      -H 'Link: <{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"' \
+      -H 'Link: {{https://json-ld.org/contexts/person.jsonld}}; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"' \
       -d '
      {
 	"brandName": {
 		"type": "Property",
-        "value" : "BM2"
+        	"value" : "BM2"
 	}
 }'
 
