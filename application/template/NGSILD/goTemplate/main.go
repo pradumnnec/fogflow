@@ -12,6 +12,7 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	"errors"
 )
 
 //var ctxUpdateBuffer []*ContextObject
@@ -57,9 +58,9 @@ func handleAdmin(commands []interface{}) {
 
 func onNotify(w http.ResponseWriter, r *http.Request) {
 	if ctype := r.Header.Get("Content-Type"); ctype == "application/json" || ctype == "application/ld+json" {
-		var context []interface{}
-		context = append(context, DEFAULT_CONTEXT)
-		notifyElement, _ := tb.getStringInterfaceMap(r)
+		//var context []interface{}
+		//context = append(context, DEFAULT_CONTEXT)
+		notifyElement, _ := getStringInterfaceMap(r)
 		notifyElemtData := notifyElement["data"]
 		notifyEleDatamap := notifyElemtData.([]interface{})
 		w.WriteHeader(201)
@@ -70,7 +71,7 @@ func onNotify(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (tb *ThinBroker) getStringInterfaceMap(r *rest.Request) (map[string]interface{}, error) {
+func getStringInterfaceMap(r *http.Request) (map[string]interface{}, error) {
 	// Get bite array of request body
 	reqBytes, err := ioutil.ReadAll(r.Body)
 
@@ -81,7 +82,7 @@ func (tb *ThinBroker) getStringInterfaceMap(r *rest.Request) (map[string]interfa
 	var req interface{}
 	err = json.Unmarshal(reqBytes, &req)
 	if err != nil {
-		DEBUG.Println("Invalid Request.")
+		fmt.Println("Invalid Request.")
 		return nil, err
 	}
 	// Parse the JSON object into a map with string keys
