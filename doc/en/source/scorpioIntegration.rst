@@ -16,8 +16,16 @@ Integration steps
 
 * Fogflow should be up and running with atleast one node.
 * Scorpio Broker should be up and running.
-* Create and trigger NGSI-LD task (`See Document`_).
+* Create and trigger topology of two FogFunction (`See Document`_).
+* Create 1-FogFunction that publish update on FogFlow Broker (`Use template`_).
+* Create 2-FogFunction that publish update on Scorpio Broker (`Use operator`_).
+
 .. _`See Document`: https://fogflow.readthedocs.io/en/latest/intent_based_program.html.
+
+.. _`Use template`: https://github.com/smartfog/fogflow/tree/development/application/template/NGSILD/python.
+
+.. _`Use operator`: https://github.com/smartfog/fogflow/tree/development/application/operator/NGSI-LD-operator/NGSILDDemo.
+
 
 **There are two type of Integration**
 
