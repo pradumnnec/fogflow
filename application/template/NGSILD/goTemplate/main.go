@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	mux "github.com/gufranmirza/go-router"
 	"io/ioutil"
@@ -12,7 +13,6 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
-	"errors"
 )
 
 //var ctxUpdateBuffer []*ContextObject
@@ -24,6 +24,9 @@ var myReferenceURL = ""
 var inputEntityId = ""
 var inputEntityType = ""
 
+/*
+	read config.json
+*/
 func readConfig(fileName string) []interface{} {
 	config, e := ioutil.ReadFile(fileName)
 	if e != nil {
@@ -56,6 +59,9 @@ func handleAdmin(commands []interface{}) {
 	isConfigured = true
 }
 
+/*
+	handler for receiving notification
+*/
 func onNotify(w http.ResponseWriter, r *http.Request) {
 	if ctype := r.Header.Get("Content-Type"); ctype == "application/json" || ctype == "application/ld+json" {
 		//var context []interface{}
@@ -70,6 +76,10 @@ func onNotify(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+/*
+	convert request into map for processing
+*/
 
 func getStringInterfaceMap(r *http.Request) (map[string]interface{}, error) {
 	// Get bite array of request body
@@ -124,6 +134,10 @@ func notify2execution() {
 	stopApp()
 }
 
+/*
+	covert element to object
+*/
+
 func element2Object(element map[string]interface{}) map[string]interface{} {
 	ctxObj := make(map[string]interface{})
 	for key, ele := range element {
@@ -131,6 +145,10 @@ func element2Object(element map[string]interface{}) map[string]interface{} {
 	}
 	return ctxObj
 }
+
+/*
+	convert object to element
+*/
 
 func object2Element(element map[string]interface{}) map[string]interface{} {
 	ctxObject := make(map[string]interface{})
@@ -165,6 +183,9 @@ func query2execution() map[string]interface{} {
 	sendUpdateWithinBuffer()
 }*/
 
+/*
+	set command provided by config.json
+*/
 func handleCmds(cmd []interface{}) {
 	for _, cmdEle := range cmd {
 		cmdMapEle := cmdEle.(map[string]interface{})
@@ -207,6 +228,9 @@ func setReferenceURL(cmd map[string]interface{}) {
 //
 // publish context entities:
 //
+/*
+	publish result on broker
+*/
 
 func publish(ctxUpdate map[string]interface{}) {
 
@@ -248,6 +272,8 @@ func runInOperationMode() {
 		notify2execution()
 	}
 }
+
+//main handler
 
 func main() {
 	if len(os.Args) == 2 && os.Args[1] == "-o" {
