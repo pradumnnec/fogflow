@@ -201,6 +201,9 @@ def notify2execution():
 
     app.run(host='0.0.0.0', port=myport)
 
+'''
+	Run the code in operation mode
+'''
 
 def runInOperationMode():
     print '===== OPERATION MODEL========'
@@ -227,22 +230,29 @@ def query2execution():
     ctxObjects = fetchInputByQuery()
     handleNotify(ctxObjects)
 
+'''
+	read config File
+'''
+def readConfig():
+   
+    # load the configuration
+    with open('config.json') as json_file:
+        config = json.load(json_file)
+	print config
+        handleConfig(config)
+
+'''
+	Query from FogFlow broker to run the code in test mode
+'''
 
 def runInTestMode():
     print '===== TEST NGSILD MODEL========'
+    readConfig()
+    # trigger the data processing
+    query2execution()
 
-    # load the configuration
 
-    with open('config.json') as json_file:
-        config = json.load(json_file)
-        print config
-
-        handleConfig(config)
-
-        # trigger the data processing
-
-        query2execution()
-
+# main handler
 
 if __name__ == '__main__':
     parameters = sys.argv

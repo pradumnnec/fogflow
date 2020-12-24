@@ -16,6 +16,7 @@ outputs = []
 
 input = {}
 scorpioIp = '' 
+brokerURL = ''
 
 @app.errorhandler(400)
 def not_found(error):
@@ -121,6 +122,9 @@ def setInput(cmd):
 
     input['type'] = cmd['type']
 
+'''
+	create request for scorpio broker
+'''
 
 def createRequest(ctxObj):
     global scorpioBrokerURL
@@ -140,6 +144,9 @@ def createRequest(ctxObj):
         print 'failed to update context'
         print response.text
 
+'''
+    update request for scorpio broker
+'''
 
 def updateRequest(ctxObj):
     #global brokerURL
@@ -156,9 +163,10 @@ def updateRequest(ctxObj):
         ctxElement.pop('id')
     if ctxElement.pop('type') == True:
         ctxElement.pop('type')
+    print(ctxElement)
     headers = {'Accept': 'application/ld+json',
-               'Content-Type': 'application/ld+json',
-               'Link': '<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
+               'Content-Type': 'application/json',
+               'Link': '{{https://json-ld.org/contexts/person.jsonld}}; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
     response = requests.patch(scorpioBrokerURL + '/ngsi-ld/v1/entities/' + eid + '/attrs',
                              data=json.dumps(ctxElement),
                              headers=headers)
@@ -166,6 +174,9 @@ def updateRequest(ctxObj):
         print 'failed to update context'
         print response.text
 
+'''
+    append request for scorpio broker
+'''
 
 def appendRequest(ctxObj):
     #global brokerURL
@@ -182,16 +193,20 @@ def appendRequest(ctxObj):
         ctxElement.pop('id')
     if ctxElement.pop('type') == True:
         ctxElement.pop('type')
-
+    print(ctxElement)
     headers = {'Accept': 'application/ld+json',
-               'Content-Type': 'application/ld+json',
-               'Link': '<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
-    response = requests.post(scorpioBrokerURL + '/ngsi-ld/v1/entities/' +eid+ '/attrs',
+               'Content-Type': 'application/json',
+               'Link': '{{https://json-ld.org/contexts/person.jsonld}}; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
+    response = requests.post(scorpioBrokerURL + '/ngsi-ld/v1/entities/' + eid + '/attrs',
                              data=json.dumps(ctxElement),
                              headers=headers)
     if response.status_code != 201:
         print 'failed to update context'
         print response.text
+
+'''
+	Query for FogFlow broker
+'''
 
 def fetchInputByQuery():
     ctxQueryReq = {}
@@ -212,6 +227,9 @@ def fetchInputByQuery():
 
         return ctxObj
 
+'''
+     customised Query for FogFlow broker
+'''
 
 def requestInputBySubscription():
     ctxSubReq = {}
