@@ -592,21 +592,9 @@ def test_case40():
 
 #testCase 41
 '''
-  To test for empty payload in csource registration
-'''
-def test_case41():
-        url=brokerIp+"/ngsi-ld/v1/csourceRegistrations/"
-        headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
-        r=requests.post(url,data=json.dumps(ld_data.subdata26),headers=headers)
-        #print(r.content)
-        #print(r.status_code)
-        assert r.status_code == 400
-
-#testCase 42
-'''
   To test for empty payload in subscription
 '''
-def test_case42():
+def test_case41():
         url=brokerIp+"/ngsi-ld/v1/subscriptions/"
         headers={'Content-Type' : 'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
         r=requests.post(url,data=json.dumps(ld_data.subdata26),headers=headers)
@@ -614,11 +602,11 @@ def test_case42():
         #print(r.status_code)
         assert r.status_code == 400
 
-#testCase 43
+#testCase 42
 '''
   To test for ModifiedAt and CreatedAt in entity creation
 '''
-def test_case43():
+def test_case42():
         #Entity Creation
         url=brokerIp+"/ngsi-ld/v1/entities/"
         headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
@@ -641,11 +629,11 @@ def test_case43():
         #print(r.status_code)
         assert r.status_code == 200
 
-#testCase 44
+#testCase 43
 '''
   To test for ModifiedAt and CreatedAt in susbcription
 '''
-def test_case44():
+def test_case43():
 	#create subscription 
 	url=brokerIp+"/ngsi-ld/v1/subscriptions/"
         headers={'Content-Type' : 'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
@@ -669,23 +657,11 @@ def test_case44():
         #print(r.status_code)
         assert r.status_code == 200
 
-#testCase 45
-'''
-  To test for csource registartion with Id pattern
-'''
-def test_case45():
-        url=brokerIp+"/ngsi-ld/v1/csourceRegistrations/"
-        headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
-        r=requests.post(url,data=json.dumps(ld_data.subdata28),headers=headers)
-        print(r.content)
-        #print(r.status_code)
-        assert r.status_code == 400  
-
-#testCase 46
+#testCase 44
 '''
   To test for update subscription over discovery
 '''
-def test_case46():
+def test_case44():
 	#create a subscription
 	url=brokerIp+"/ngsi-ld/v1/subscriptions/"
         headers={'Content-Type' : 'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
@@ -713,11 +689,11 @@ def test_case46():
         #print(r.status_code)
 	assert r.status_code == 200
 
-#testCase 47
+#testCase 45
 '''
   To test entity creation with nested property with context in payload
 '''
-def test_case47():
+def test_case45():
         url=brokerIp+"/ngsi-ld/v1/entities/"
         headers={'Content-Type' : 'application/json','Accept':'application/ld+json'}
         r=requests.post(url,data=json.dumps(ld_data.subdata33),headers=headers)
@@ -725,11 +701,11 @@ def test_case47():
         #print(r.status_code)
         assert r.status_code == 201
 
-#testCase 48
+#testCase 46
 '''
   To test create entity with nested property with  context in Link
 '''
-def test_case48():
+def test_case46():
 	url=brokerIp+"/ngsi-ld/v1/entities/"
         headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
         r=requests.post(url,data=json.dumps(ld_data.subdata34),headers=headers)
@@ -737,11 +713,11 @@ def test_case48():
         print(r.status_code)
         assert r.status_code == 201
 
-#testCase 49
+#testCase 47
 '''
   To test to retrieve entity with id as urn:ngsi-ld:B990
 '''
-def test_case49():
+def test_case47():
 	url=brokerIp+"/ngsi-ld/v1/entities/urn:ngsi-ld:Vehicle:B990"
         headers={'Content-Type' : 'application/ld+json','Accept':'application/ld+json'}
         r=requests.get(url,headers=headers)
@@ -757,11 +733,11 @@ def test_case49():
         print(r.status_code)
         assert r.status_code == 200
 
-#testCase 50
+#testCase 48
 '''
   To test and retrieve the entity from discovery
 '''
-def test_case50():
+def test_case48():
         url=discoveryIp+"/ngsi9/registration/urn:ngsi-ld:Vehicle:C001"
         r=requests.get(url)
         resp_content=r.content
@@ -775,11 +751,11 @@ def test_case50():
         #print(r.status_code)
         assert r.status_code == 200
 
-#testCase 51
+#testCase 49
 '''
   To test if multiple subscription can be created with same subscription Id
 '''
-def test_case51():
+def test_case49():
 	url=brokerIp+"/ngsi-ld/v1/subscriptions/"
 	headers={'Content-Type' : 'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
 	r=requests.post(url,data=json.dumps(ld_data.subdata36),headers=headers)
@@ -800,11 +776,11 @@ def test_case51():
         #print(r.status_code)
 	assert r.status_code == 201
 
-#testCase 52
+#testCase 50
 '''
   To test if delete attribute is reflected over discovery
 '''
-def test_case52():
+def test_case50():
 	#to create an entity
 	url=brokerIp+"/ngsi-ld/v1/entities/"
         headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
@@ -853,11 +829,11 @@ def test_case52():
                 print("\nNot Validated")
 	assert r.status_code == 200
 
-#testCase 53
+#testCase 51
 '''
   To test if appended attribute is reflected on discovery 
 '''
-def test_case53():
+def test_case51():
 	#to fetch registration of entity from discovery before appending
 	url=discoveryIp+"/ngsi9/registration/urn:ngsi-ld:Vehicle:A3000"
         r=requests.get(url)
@@ -899,11 +875,11 @@ def test_case53():
                 print("\nNot Validated")
 	assert r.status_code == 200
 
-#testCase 54
+#testCase 52
 '''
   To test if discovery's context availablity is updated on updating 
 '''
-def test_case54():
+def test_case52():
 	#to create entity
 	url=brokerIp+"/ngsi-ld/v1/entities/"
         headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
@@ -930,11 +906,11 @@ def test_case54():
         print(r.content)
         assert r.status_code == 200
 
-# testCase 55
+# testCase 53
 '''
   To test if instanceId is fetched while creating entity 
 '''
-def test_case55():
+def test_case53():
 	# to create entity
         url=brokerIp+"/ngsi-ld/v1/entities/"
         headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
@@ -958,12 +934,11 @@ def test_case55():
         print(r.status_code)
         assert r.status_code == 200
 
-
-# testCase 56
+# testCase 54
 '''
   To test if datasetId is fetched while creating entity
 '''
-def test_case56():
+def test_case54():
         # to create entity
         url=brokerIp+"/ngsi-ld/v1/entities/"
         headers={'Content-Type' : 'application/json','Accept':'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
@@ -988,11 +963,11 @@ def test_case56():
         assert r.status_code == 200
 
 
-#testCase 57
+#testCase 55
 '''
   To test for subscription without entities in Payload
 '''
-def test_case57():
+def test_case55():
         url=brokerIp+"/ngsi-ld/v1/subscriptions/"
         headers={'Content-Type' : 'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
         r=requests.post(url,data=json.dumps(ld_data.subdata44),headers=headers)
@@ -1000,11 +975,11 @@ def test_case57():
         #print(r.status_code)
         assert r.status_code == 400
 
-#testCase 58
+#testCase 56
 '''
   To test for subscription with different type in payload 
 '''
-def test_case58():
+def test_case56():
         url=brokerIp+"/ngsi-ld/v1/subscriptions/"
         headers={'Content-Type' : 'application/ld+json','Link':'<{{link}}>; rel="https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"; type="application/ld+json"'}
         r=requests.post(url,data=json.dumps(ld_data.subdata45),headers=headers)
