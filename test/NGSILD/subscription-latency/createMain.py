@@ -7,14 +7,14 @@ import threading
 import os
 import sys
 
-import function as fogflow
+import ngsildClient as fogflow
 
 app = Flask(__name__, static_url_path='')
 
 start = False
 startTime = ''
-
-@app.route('/notifyContext', methods=['POST'])
+subcriptionBroker = '' 
+'''@app.route('/notifyContext', methods=['POST'])
 
 def notify():
     //handle notification
@@ -22,20 +22,30 @@ def notify():
         startTime = ()
 	# find The throughtput
 
-
+'''
 
 def runApp():
-    myport = 8085
+    myport = 8086
     app.run(host='0.0.0.0', port=myport)
 
 
-def subscribe():
+def handleConfig(config):
+    SubscriptionBroker = config['subscribe_broker_url']
+    print(SubscriptionBroker)
+
+def setConfig():
+    # load the configuration
+    with open('config.json') as json_file:
+        config = json.load(json_file)
+        handleConfig(config)
+
+#def subscribe():
     
 if __name__ == '__main__':
      #run app
     setConfig()
     runApp()
-    sid = Subscribe()
+   # sid = Subscribe()
     
      
 
