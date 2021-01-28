@@ -16,6 +16,7 @@ startTime = ''
 subcriptionBroker = ''
 myport = 8085 
 myIp = ''
+noOfRequest = 2 
 '''@app.route('/notifyContext', methods=['POST'])
 
 def notify():
@@ -47,6 +48,28 @@ def setConfig():
         config = json.load(json_file)
         handleConfig(config)
 
+
+def updateRequest(requestNo):
+    updateCtxRequest = {}
+    updateCtxRequest['id'] = 'urn:ngsi-ld:Car:A0' + requestNo
+    updateCtxRequest['type'] = 'Vehicle'
+    brand = {}
+    brand['type'] = 'property'
+    brand['value'] = 'BMW'
+    
+    CarRelation = {}
+    CarRelation['type'] = 'relationship'
+    CarRelation['object'] = 'urn:ngsi-ld:Car:A111'
+    updateCtxRequest['brand'] = brand 
+    updateCtxRequest['CarRelation'] = CarRelation
+    
+    responseStartus = fogflow.updateRequest(updateCtxRequest,BrokerIp)
+    print(responseStartus)
+
+def update(noOfRequest):
+    for requestNo in range(noOfRequest):
+        updateRequest(requestNo)
+
 def subscribe():
 
     subscriptionRequest = {}
@@ -55,7 +78,7 @@ def subscribe():
     entities = []
 
     entity = {}
-    entity['id'] = 'urn:ngsi-ld:Car:A01'
+    entity['id'] = 'urn:ngsi-ld:Car:A0' + '.*'
     entity['type'] = 'Vehicle'
     entities.append(entity)
 
@@ -77,7 +100,8 @@ if __name__ == '__main__':
      #run app
     setConfig()
     runApp()
-   # sid = Subscribe()
+    sid = Subscribe()
+    update(noOfRequest)
     
      
 
