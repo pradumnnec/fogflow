@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   #FogFlow cloud components will be deployed inside fogflow namespace
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)
@@ -41,41 +41,26 @@ spec:
         name: nginx
         ports:
         - containerPort: 80
+          hostPort: 80
         #readiness and liveness to check pod's Health
-        readinessProbe:
-          tcpSocket:
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 80
-          initialDelaySeconds: 15
-          periodSeconds: 20
         resources:
           #CPU and memory limits for nginx deployment
-          limits:
-            memory: 1Gi
-            cpu: 800m
-          requests:
-            memory: 500Mi
-            cpu: 500m
         volumeMounts:
         - name: nginx-conf
           mountPath: /etc/nginx/nginx.conf
           readOnly: true
       restartPolicy: Always
-      serviceAccountName: fogflow-dns 
+#      serviceAccountName: fogflow-dns 
       volumes:
       - name: nginx-conf 
         hostPath:
-          path: /home/necuser/fogflow/fogflow/yaml/nginx.conf
+          path: /home/necuser/sanchita/nginx.conf 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)

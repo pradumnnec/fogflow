@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   #FogFlow cloud components will be deployed inside fogflow namespace
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)
@@ -47,26 +47,10 @@ spec:
         ports:
         - containerPort: 5672
         #readiness and liveness to check pod's Health
-        readinessProbe:
-          tcpSocket:
-            port: 5672 
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          tcpSocket:
-            port: 5672 
-          initialDelaySeconds: 15
-          periodSeconds: 20
         resources: 
          #CPU and memory limits for rabbitmq deployment
-          limits:
-            memory: 2Gi
-            cpu: 1
-          requests:
-            memory: 2Gi
-            cpu: 1
       restartPolicy: Always
-      serviceAccountName: fogflow-dns 
+      #serviceAccountName: fogflow-dns 
       volumes: null
 status: {}
 
@@ -75,7 +59,7 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)

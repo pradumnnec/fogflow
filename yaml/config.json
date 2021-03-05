@@ -1,10 +1,8 @@
 {
-    "coreservice_ip": "172.30.76.68",   
-    "external_hostip": "172.30.76.68",
-    "internal_hostip": "127.0.0.1", 
+    "my_hostip": "172.30.48.24",
     "physical_location":{
-        "longitude": 139.709059,
-        "latitude": 35.692221
+        "longitude": 140.709059,
+        "latitude": 39.692221
     },
     "site_id": "001",
     "logging":{
@@ -25,7 +23,7 @@
     "worker": {
         "container_autoremove": false,
         "start_actual_task": true,
-        "capacity": 8
+        "capacity": 4
     },
     "designer": {
         "webSrvPort": 8080,

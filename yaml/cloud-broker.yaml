@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   #FogFlow cloud components will be deployed inside fogflow namespace
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)
@@ -36,11 +36,12 @@ spec:
         io.kompose.service: cloud-broker
     spec:
       containers:
-      - image: fogflow/broker:3.2
+      - image: pradumn99/broker:test
         imagePullPolicy: ""
         name: cloud-broker
         ports:
         - containerPort: 8070
+          hostPort: 8070
         #readiness and liveness to check pod's Health 
         readinessProbe:
           tcpSocket:
@@ -65,18 +66,18 @@ spec:
           mountPath: /config.json
           readOnly: true
       restartPolicy: Always
-      serviceAccountName: fogflow-dns 
+#      serviceAccountName: fogflow-dns 
       volumes:
        - name: config-json
          hostPath:
-           path: /home/necuser/fogflow/fogflow/yaml/config.json 
+           path: /home/necuser/sanchita/config.json 
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)

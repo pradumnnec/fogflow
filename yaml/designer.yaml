@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   #FogFlow cloud components will be deployed inside fogflow namespace
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)
@@ -41,7 +41,9 @@ spec:
         name: designer
         ports:
         - containerPort: 8080
+          hostPort: 8080
         - containerPort: 1030
+          hostPort: 1030
         #readiness and liveness to check pod's Health
         readinessProbe:
           tcpSocket:
@@ -65,17 +67,17 @@ spec:
         - name: config-json
           mountPath: /app/config.json
       restartPolicy: Always
-      serviceAccountName: fogflow-dns 
+#      serviceAccountName: fogflow-dns 
       volumes:
       - name: config-json
         hostPath:
-          path: /home/necuser/fogflow/fogflow/yaml/config.json 
+          path: /home/necuser/sanchita/config.json 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: fogflow
+#  namespace: fogflow
   annotations:
     kompose.cmd: kompose convert -f docker-compose.yml
     kompose.version: 1.21.0 (992df58d8)
@@ -94,6 +96,4 @@ spec:
   selector:
     io.kompose.service: designer
   externalIPs: [172.30.48.24] 
-status:
-  loadBalancer: {}
 
