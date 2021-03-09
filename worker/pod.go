@@ -4,16 +4,17 @@ import (
         "context"
         "fmt"
 	"strconv"
-	"encoding/json"
+//	"encoding/json"
 
-//        metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+        metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
         "k8s.io/client-go/kubernetes"
         "k8s.io/client-go/rest"
         appsv1 "k8s.io/api/apps/v1"
         apiv1 "k8s.io/api/core/v1"
-//	coreV1 "k8s.io/api/core/v1"
-//	"k8s.io/apimachinery/pkg/util/intstr"
+	coreV1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
+	docker "github.com/fsouza/go-dockerclient"
 
 //        CreateOptions "k8s.io/apimachinery/pkg/apis/meta/v1"
 //        Deployment "k8s.io/api/apps/v1"
@@ -28,20 +29,25 @@ import (
         // _ "k8s.io/client-go/plugin/pkg/client/auth/openstack"
 )
 
-type pod struct{}
+type pod struct{
+	client        *docker.Client
+}
 
 func (p *pod) pod(dockerImage string, port string, adminCfg []interface{}) (string, error){
 	
 	// prepare the configuration for a docker container, host mode for the container network
         evs := make([]string, 0)
         evs = append(evs, fmt.Sprintf("myport=%s", port))
-        fmt.Println("************005**********")
 
         // pass the initial configuration as the environmental variable
-        jsonString, _ := json.Marshal(adminCfg)
-        evs = append(evs, fmt.Sprintf("adminCfg=%s", jsonString))
-	fmt.Println("************evs is**********",evs,jsonString)
+        //jsonString, _ := json.Marshal(adminCfg)
+        evs = append(evs, fmt.Sprintf("adminCfg=%s", adminCfg))
 	fmt.Println("************adminCfg is**********",adminCfg)
+	b := make([]interface{}, len(adminCfg))
+	for i := range adminCfg { 
+    		b[i] = adminCfg[i]
+	}	
+	fmt.Println("************line #46 b[i] is**********",b)
 
 	// creates the in-cluster config
         fmt.Println("******inside pod.go**********") 
@@ -56,9 +62,7 @@ func (p *pod) pod(dockerImage string, port string, adminCfg []interface{}) (stri
 	if err != nil {
                 panic(err.Error())
         }
-
         // creates the clientset
-	fmt.Println("******port num is**********",iport)
         clientset, err := kubernetes.NewForConfig(config)
         if err != nil {
                 panic(err.Error())
@@ -96,13 +100,13 @@ func (p *pod) pod(dockerImage string, port string, adminCfg []interface{}) (stri
                                                                 },
                                                         },
 							Env: []apiv1.EnvVar{
-							      {
+							     {
 									Name: "adminCfg",
-									Value: "{{evs.adminCfg}}",
+									Value: b,
 								},
 							},
-							Command:         []string{fmt.Sprintf("adminCfg=%s", evs)},
-							//Args:            []string{"evs"},
+						//	Command:       node, main.js, --adminCfg $(evs),
+							//Args:            []string{"$(evs)",},
 								
                                                 },
                                         },
@@ -117,11 +121,12 @@ func (p *pod) pod(dockerImage string, port string, adminCfg []interface{}) (stri
         if err != nil {
                 panic(err)
         }
+	fmt.Printf("*********deployment is ******************", deployment)
         fmt.Printf("Created deployment %q.\n", result.GetObjectMeta().GetName())
 //	return result.GetObjectMeta().GetName(), err
 
 
-/*	// Specification of the Service (k8s.io/api/core/v1)
+	// Specification of the Service (k8s.io/api/core/v1)
 
 	coreV1Client := clientset.CoreV1()
 
@@ -151,7 +156,7 @@ func (p *pod) pod(dockerImage string, port string, adminCfg []interface{}) (stri
 		panic(err)
 	}
 	fmt.Printf("Created service %s\n", service.ObjectMeta.Name)
-*/
+
 
 	return result.GetObjectMeta().GetName(), err
 }
