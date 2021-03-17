@@ -582,7 +582,7 @@ func contentTypeValidator(cType string) error {
 		return err
 	}
 	cTypeInLower := strings.ToLower(cType)
-	if cTypeInLower != "application/json" && cTypeInLower != "application/ld + json" {
+	if cTypeInLower != "application/json" && cTypeInLower != "application/ld+json" {
 		err := errors.New("Unsupported content type. Allowed are application/json and application/ld+json.")
 		return err
 	}

@@ -1864,6 +1864,8 @@ func (tb *ThinBroker) removeFiwareHeadersFromId(ctxElem *ContextElement, fiwareS
 
 func (tb *ThinBroker) LDUpdateContext(w rest.ResponseWriter, r *rest.Request) {
 	err := contentTypeValidator(r.Header.Get("Content-Type"))
+	fmt.Println("This is thinbroker")
+	fmt.Println("err1",err)
 	if err != nil {
 		w.WriteHeader(500)
 		rest.Error(w, err.Error(), http.StatusBadRequest)
@@ -1884,19 +1886,33 @@ func (tb *ThinBroker) LDUpdateContext(w rest.ResponseWriter, r *rest.Request) {
 
 		for _, ctx := range LDupdateCtxReq {
 			var context []interface{}
-			contextInPayload := true
+			contextInPayload := false
 			//Get Link header if present
+			cType := r.Header.Get("Content-Type")
+			cTypeInLower := strings.ToLower(cType) 
 			Link := r.Header.Get("Link")
+			if cTypeInLower == "application/ld+json" {
+				contextInPayload = true
+			} else {
+				//Link := r.Header.Get("Link")
+				/*if link := r.Header.Get("Link"); link != "" {
+					linkMap := tb.extractLinkHeaderFields(link)
+					if linkMap["rel"] != DEFAULT_CONTEXT {
+					}
+				}*/
+				context = append(context, DEFAULT_CONTEXT)
+			}
+			/*Link := r.Header.Get("Link")
 			if link := r.Header.Get("Link"); link != "" {
-				contextInPayload = false                    // Context in Link header
 				linkMap := tb.extractLinkHeaderFields(link) // Keys in returned map are: "link", "rel" and "type"
 				if linkMap["rel"] != DEFAULT_CONTEXT {
 				}
 			}
 			context = append(context, DEFAULT_CONTEXT)
-
+			*/
 			//Get a resolved object ([]interface object)
 			resolved, err := tb.ExpandPayload(ctx, context, contextInPayload)
+			fmt.Println("err2",err)
 			if err != nil {
 
 				if err.Error() == "EmptyPayload!" {
