@@ -5,7 +5,7 @@ on: [push,pull_request]
 jobs:
 
   build:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
 
@@ -44,7 +44,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install jq
-        sudo apt-get install python-pip
+        #sudo apt-get install python-pip
         #sudo apt install python2
         #curl  https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
         #sudo python2 get-pip.py
