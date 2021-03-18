@@ -64,6 +64,7 @@ func (apisrv *RestApiSrv) Start(cfg *Config, broker *ThinBroker) {
 		//NGSI-LD APIs
 
 		// Add upsert Api
+		rest.Post("/ngsi-ld/v1/entityOperations/upsert/", broker.LDUpdateContext),
 		rest.Post("/ngsi-ld/v1/entityOperations/upsert", broker.LDUpdateContext),
 		//create and update
 		rest.Post("/ngsi-ld/v1/entities/", broker.LDCreateEntity),

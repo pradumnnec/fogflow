@@ -10,8 +10,8 @@ import ld_data
 import sys
 
 # change it by broker ip and port
-brokerIp="http://localhost:8070"
-discoveryIp="http://localhost:8090"
+brokerIp="http://127.0.0.1:8070"
+discoveryIp="http://127.0.0.1:8090"
 
 print("Testing of NGSI-LD")
 # testCase 1

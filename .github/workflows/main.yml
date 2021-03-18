@@ -5,7 +5,7 @@ on: [push,pull_request]
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
 
@@ -22,17 +22,14 @@ jobs:
         cd discovery
         pwd
         sh build
-
         echo "build broker"
         cd ../broker
         pwd
         sh build
-
         echo "build worker"
         cd ../worker
         pwd
         sh build
-
         echo "build master"
         cd ../master
         pwd
@@ -47,11 +44,12 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install jq
-        sudo apt install python2
-        curl  https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
-        sudo python2 get-pip.py
+        #sudo apt-get install python-pip
+        #sudo apt install python2
+        #curl  https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+        #sudo python2 get-pip.py
         pip -V
-        #sudo pip install --upgrade pip
+        sudo pip install --upgrade pip
         pip install Flask
         pip install requests
         pip install -U pytest
@@ -90,7 +88,7 @@ jobs:
       
         cd discovery/ 
         screen -d -m ./discovery
-
+        
         cd ../broker/
         screen -d -m ./broker
         #./broker
@@ -98,11 +96,11 @@ jobs:
 
         cd ../designer/
         screen -d -m node main.js
-
+        
         cd ../test/UnitTest/
-        screen -d -m python2 accumulator.py
+        screen -d -m python accumulator.py
         #python accumulator.py
-
+        
         cd ../UnitTest/v2/
         pytest -s -v
  
