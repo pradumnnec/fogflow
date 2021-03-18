@@ -11,7 +11,7 @@ import data_ngsi10
 import sys
 
 # change it by broker ip and port
-brokerIp="http://localhost:8070"
+brokerIp="http://127.0.0.1:8070"
 
 print("Testing of v1 API")
 # testCase 1
