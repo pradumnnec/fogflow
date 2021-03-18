@@ -798,8 +798,12 @@ func (nc *NGSI10Client) CreateLDEntityOnRemote(elem map[string]interface{}, link
 	req.Header.Add("Accept", "application/ld+json")
 
 	if link != "" {
-		req.Header.Add("Link", link)
-	}
+                req.Header.Add("Link", link)
+                req.Header.Add("Content-Type", "application/json")
+        } else {
+                req.Header.Add("Content-Type", "application/ld+json")
+        }
+
 
 	client := nc.SecurityCfg.GetHTTPClient()
 	resp, err := client.Do(req)
